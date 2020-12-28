@@ -1,0 +1,34 @@
+.img-container{
+    width: 500px;
+    height: auto;
+    position: relative;
+}
+
+.img-container img{
+    width: 100%;
+    display: block;
+}
+
+.img-container::before{
+    content: "";
+    position: absolute;
+    width: 100%; height: 100%;
+    background-image: url("img/yoda.jpeg");
+    background-size: cover;
+    z-index: -1;
+
+    top: 15px; left: 0;
+    filter: blur(7px);
+}
+
+.img-container::before #omkar{
+    content: "";
+    position: absolute;
+    width: 100%; height: 100%;
+    background-image: url("img/omkar.jpeg");
+    background-size: cover;
+    z-index: -1;
+
+    top: 15px; left: 0;
+    filter: blur(7px);
+}
