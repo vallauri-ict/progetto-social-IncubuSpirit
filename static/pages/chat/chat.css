@@ -1,0 +1,11 @@
+::-webkit-scrollbar {
+    display: none;
+}
+
+body{
+    background-color: transparent;
+    color: floralwhite;
+    height: 100%;
+    width: 100%;
+    padding:5px;
+}
