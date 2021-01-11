@@ -15,10 +15,74 @@
 
   <body>
     <h3 style="text-align:center;">Feed</h3>
-    <p>Foto/Video/Testo</p>
-    <p>Username + Descrizione</p>
-    <p>Ultimi 3 commenti</p>
-    <input type="text" placeholder="Scrivi un commento..." class="form-control" style="background-color: rgba(0,0,0,0.15); border:none; border-bottom:1px solid floralwhite; border-radius:4px 4px 0px 0px;">
+
+    <!--Image Post-->
+    <div name="post1" style="background-color:rgb(46, 46, 46); width: auto; border-radius: 5px;">
+      <!--Image-->
+      <div class="image-container" style="text-align: center; margin-top: 25px;">
+        <img src="../../img/yoda.jpeg" style="width: 560px; height: 560px; margin-top: 25px;">
+      </div>
+      <!--Reactions-->
+      <div class="reaction-bar" style="height: 40px; width: 560px; margin-left: 27px; border-radius:0px 0px 5px 5px; border-top: 0px solid rgba(75, 75, 75, 0.589); border-left: 1px solid rgba(75, 75, 75, 0.589); border-right: 1px solid rgba(75, 75, 75, 0.589); border-bottom: 1px solid rgba(75, 75, 75, 0.589);">
+       <button class="like" style="background-color: transparent; border: none"><img style="width: 25px; height: 25px;"></button>
+       <button class="dislike" style="background-color: transparent; border: none"><img style="width: 25px; height: 25px;"></button> 
+      </div>
+      <!--Username & Description-->
+      <a href="#" name="username" style="font-style: italic; font-weight: bold; color: white; margin-top: 25px; margin-left: 25px;">Username</a>
+      <div name="description" style="width: 560px; margin-left: 25px; text-align: justify;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lacinia felis et consequat venenatis. Suspendisse bibendum dui nisi, eget molestie sem rhoncus eu. Phasellus a leo finibus, tempus magna malesuada, ullamcorper erat. Proin vitae tellus non metus placerat euismod sit amet vel lectus. Praesent vel mollis dui.</div>
+      <!--Comments-->
+      <div class="lastcomments-container" style="color:lightslategray; margin-left: 25px;">
+        <div style="width: 560px;" name="lastcomment">comment</div>  
+      </div>
+      <input type="text" placeholder="Scrivi un commento..." class="form-control" style="background-color: rgba(0,0,0,0.15); border:none; border-bottom:1px solid floralwhite; border-radius:4px 4px 0px 0px; margin-top: 10px; margin-left: 25px; width: 560px;">
+      <div style="width: 560px; height: 25px;"></div>
+    </div>
+
+    <!--Video Post-->
+    <div name="post2" style="background-color:rgb(46, 46, 46); width: auto; border-radius: 5px;">
+      <!--Video-->
+      <div class="video-container" style="text-align: center; margin-top: 25px; height: 580px;">
+        <video loop autoplay muted class="video" src="../../img/video.mp4" style="width: 560px; height: 560px; margin-top: 25px;" controls>
+          <source src="video.mp4" type="video/mp4">
+        </video>
+      </div>
+      <!--Reactions-->
+      <div class="reaction-bar" style="height: 40px; width: 560px; margin-left: 27px; border-radius:0px 0px 5px 5px; border-top: 0px solid rgba(75, 75, 75, 0.589); border-left: 1px solid rgba(75, 75, 75, 0.589); border-right: 1px solid rgba(75, 75, 75, 0.589); border-bottom: 1px solid rgba(75, 75, 75, 0.589);">
+        <button class="like" style="background-color: transparent; border: none"><img style="width: 25px; height: 25px;"></button>
+        <button class="dislike" style="background-color: transparent; border: none"><img style="width: 25px; height: 25px;"></button> 
+       </div>
+      <!--Username & Description-->
+      <a href="#" name="username" style="font-style: italic; font-weight: bold; color: white; margin-top: 25px; margin-left: 25px;">Username</a>
+      <div name="description" style="width: 560px; margin-left: 25px; text-align: justify;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lacinia felis et consequat venenatis. Suspendisse bibendum dui nisi, eget molestie sem rhoncus eu. Phasellus a leo finibus, tempus magna malesuada, ullamcorper erat. Proin vitae tellus non metus placerat euismod sit amet vel lectus. Praesent vel mollis dui.</div>
+      <!--Comments-->
+      <div class="lastcomments-container" style="color:lightslategray; margin-left: 25px;">
+        <div style="width: 560px;" name="lastcomment">comment</div>
+      </div>
+      <input type="text" placeholder="Scrivi un commento..." class="form-control" style="background-color: rgba(0,0,0,0.15); border:none; border-bottom:1px solid floralwhite; border-radius:4px 4px 0px 0px; margin-top: 10px; margin-left: 25px; width: 560px;">
+      <div style="width: 560px; height: 25px;"></div>
+    </div>
+
+    <!--Text Post-->
+    <div name="post3" style="background-color:rgb(46, 46, 46); width: auto; border-radius: 5px;">
+      <!--Text-->
+      <div class="text-container" style="font-size: 18pt;">
+        <p style="text-align: center; margin-top: 25px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lacinia felis et consequat venenatis. Suspendisse bibendum dui nisi, eget molestie sem rhoncus eu. Phasellus a leo finibus, tempus magna malesuada, ullamcorper erat. Proin vitae tellus non metus placerat euismod sit amet vel lectus. Praesent vel mollis dui.</p>
+      </div>
+      <!--Reactions-->
+      <div class="reaction-bar" style="height: 40px; width: 560px; margin-left: 27px; border-radius:0px 0px 5px 5px; border-top: 0px solid rgba(75, 75, 75, 0.589); border-left: 1px solid rgba(75, 75, 75, 0.589); border-right: 1px solid rgba(75, 75, 75, 0.589); border-bottom: 1px solid rgba(75, 75, 75, 0.589);">
+        <button class="like" style="background-color: transparent; border: none"><img style="width: 25px; height: 25px;"></button>
+        <button class="dislike" style="background-color: transparent; border: none"><img style="width: 25px; height: 25px;"></button> 
+       </div>
+      <!--Username-->
+      <a href="#" name="username" style="font-style: italic; font-weight: bold; color: white; margin-top: 10px; margin-left: 25px;">Username</a>
+      <!--Comments-->
+      <div class="lastcomments-container" style="color:lightslategray; margin-left: 25px;">
+        <div style="width: 560px;" name="lastcomment">comment</div> 
+      </div>
+      <input type="text" placeholder="Scrivi un commento..." class="form-control" style="background-color: rgba(0,0,0,0.15); border:none; border-bottom:1px solid floralwhite; border-radius:4px 4px 0px 0px; margin-top: 10px; margin-left: 25px; width: 560px;">
+      <div style="width: 560px; height: 25px;"></div>
+    </div>
+
   </body>
 
 </html>

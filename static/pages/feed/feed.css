@@ -9,3 +9,39 @@ body{
     width: 100%;
     padding:5px;
 }
+
+.reaction-bar{
+    background-color: rgba(75, 75, 75, 0.589);
+    border-color: rgba(75, 75, 75, 0.589);
+}
+
+.reaction-bar button{
+    margin: 5px;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+/*
+.like{
+    -webkit-user-select: none;
+}
+
+video::-webkit-media-controls-play-button {
+    
+}
+
+video::-webkit-media-controls-volume-slider {
+    display: none;
+}
+
+video::-webkit-media-controls-mute-button {}
+
+video::-webkit-media-controls-timeline {}
+
+video::-webkit-media-controls-current-time-display {
+    display: none;
+}*/
