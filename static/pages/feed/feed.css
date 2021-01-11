@@ -69,11 +69,15 @@ button:focus {
 
 .username{
     font-style: italic; font-weight: bold; 
-    color: white; margin-top: 25px; margin-left: 25px;
+    color: white; margin-top: 25px;
 }
 
 .description{
-    width: 560px; margin-left: 25px; text-align: justify;
+    width: 560px; text-align: justify; display: inline;
+}
+
+.userDesc{
+    width: 560px; margin: 0 auto; padding-top: 5px;
 }
 
 .lastcomments-container{
