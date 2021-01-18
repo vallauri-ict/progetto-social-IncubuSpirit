@@ -74,13 +74,17 @@ iframe {
     width: 100%;
 }
 
+.form-inline{
+    height: 100%;
+}
+
 .nav-btn{
     color:floralwhite;
     margin:0 auto;
     background-color:rgba(0, 0, 0, 0);
     border:none;
-    width: 269px;
-    height: 70px;
+    width: 20%;
+    height: 100%;
 }
 
 .nav-btn img{
