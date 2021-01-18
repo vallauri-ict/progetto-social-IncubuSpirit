@@ -1,50 +1,74 @@
 "use strict";
 
 $(document).ready(function() {
-    var figure = $(".video").hover( hoverVideo, hideVideo );
-    let btnLike=$(".like");
-    let btnDislike=$(".dislike");
-    let likeImage=btnLike.children('img').prop('src', '../../img/heart-unclicked.png');
-    let dislikeImage=btnDislike.children('img').prop('src', '../../img/broken-heart-unclicked.png');
     let feed=$("body");
-
-    btnLike.on('click', clickLike);
-
-    btnDislike.on('click',clickDislike);
     
-    imagePost();
-
-    function clickLike(){
-        let _bar=$(this).parent();
-        console.log(_bar);
-        console.log(_bar.children());
-        let _btnlike=_bar.children()[0];
-        console.log(_btnlike);
-        if(_btnLike.attr('class')=='unclicked')
-        {
-            likeImage.attr('src', '../../img/heart-liked.png');
-            dislikeImage.attr('src', '../../img/broken-heart-unclicked.png');
-        }
-        else
-            likeImage.attr('src', '../../img/heart-unclicked.png');
-    }
-
-    function clickDislike(){
-        if(dislikeImage.attr('src')=='../../img/broken-heart-unclicked.png')
-        {
-            dislikeImage.attr('src', '../../img/broken-heart-disliked.png');
-            likeImage.attr('src', '../../img/heart-unclicked.png');
-        }
-        else
-            dislikeImage.attr('src', '../../img/broken-heart-unclicked.png');
-    }
-
     function hoverVideo(e) {  
-        figure.get(0).play(); 
+        $(this).get(0).play(); 
     }
 
     function hideVideo(e) {
-        figure.get(0).pause(); 
+        $(this).get(0).pause();
+    }
+
+    imagePost();
+    videoPost();
+    textPost();
+
+    function clickLike(){
+        let _bar=$(this).parent();
+        let _btndislike=_bar.children().eq(1);
+        let _btnlike=$(this);
+        let _likeimage=_btnlike.children().eq(0);
+        let _dislikeimage=_btndislike.children().eq(0);
+        if(_btnlike.hasClass("unclicked"))
+        {
+            _btnlike.removeClass("unclicked");
+            _btnlike.addClass("clicked");
+            if(_btndislike.hasClass("clicked"))
+            {
+                _btndislike.removeClass("clicked");
+                _btndislike.addClass("unclicked");
+                _dislikeimage.attr('src', '../../img/broken-heart-unclicked.png');
+            }
+            _likeimage.attr('src', '../../img/heart-liked.png');
+            _dislikeimage.attr('src', '../../img/broken-heart-unclicked.png');
+        }
+        else
+        {
+            _likeimage.attr('src', '../../img/heart-unclicked.png');
+            _btnlike.removeClass("clicked");
+            _btnlike.addClass("unclicked");
+        }
+            
+    }
+
+    function clickDislike(){
+        let _bar=$(this).parent();
+        let _btnlike=_bar.children().eq(0);
+        let _btndislike=$(this);
+        let _dislikeimage=_btndislike.children().eq(0);
+        let _likeimage=_btnlike.children().eq(0);
+        if(_btndislike.hasClass("unclicked"))
+        {
+            _btndislike.removeClass("unclicked");
+            _btndislike.addClass("clicked");
+            if(_btnlike.hasClass("clicked"))
+            {
+                _btnlike.removeClass("clicked");
+                _btnlike.addClass("unclicked");
+                _likeimage.attr('src', '../../img/heart-unclicked.png');
+            }
+            _dislikeimage.attr('src', '../../img/broken-heart-disliked.png');
+            _likeimage.attr('src', '../../img/heart-unclicked.png');
+        }
+        else
+        {
+            _dislikeimage.attr('src', '../../img/broken-heart-unclicked.png');
+            _btndislike.removeClass("clicked");
+            _btndislike.addClass("unclicked");
+        }
+            
     }
 
     function imagePost() {
@@ -57,12 +81,12 @@ $(document).ready(function() {
         let _btnDislike=$("<button>").attr("class","dislike unclicked");
         let _dislikeImage=$("<img>").attr('src', '../../img/broken-heart-unclicked.png');
         let _userDesc=$("<div>").attr("class","userDesc");
-        let _username=$("<a>").attr({"class":"username","href":"#"});
-        let _description=$("<div>").attr("class","description").html("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lacinia felis et consequat venenatis. Suspendisse bibendum dui nisi, eget molestie sem rhoncus eu. Phasellus a leo finibus, tempus magna malesuada, ullamcorper erat. Proin vitae tellus non metus placerat euismod sit amet vel lectus. Praesent vel mollis dui.");
+        let _username=$("<a>").attr({"class":"username","href":"#"}).html("username");
+        let _description=$("<div>").attr("class","description").html(" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lacinia felis et consequat venenatis. Suspendisse bibendum dui nisi, eget molestie sem rhoncus eu. Phasellus a leo finibus, tempus magna malesuada, ullamcorper erat. Proin vitae tellus non metus placerat euismod sit amet vel lectus. Praesent vel mollis dui.");
         let _lastcommentsContainer=$("<div>").attr("class","lastcomments-container");
         let _commentPreview=$("<div>").attr("class","comment-preview");
         let _textboxContainer=$("<div>").attr("class","textbox-container");
-        let _txtComment=$("<div>").attr({"type":"text","class":"form-control txtComment","placeholder":"Scrivi un commento..."});
+        let _txtComment=$("<input>").attr({"type":"text","class":"form-control txtComment","placeholder":"Scrivi un commento..."});
         let _blankSpace=$("<div>").attr("class","blank-space");
         
         _imgContainer.appendTo(_imgPost);
@@ -72,9 +96,9 @@ $(document).ready(function() {
         _likeImage.appendTo(_btnLike);
         _btnDislike.appendTo(_reactionBar).on('click',clickDislike);
         _dislikeImage.appendTo(_btnDislike);
-        _userDesc.appendTo(_imgPost);
         _username.appendTo(_userDesc);
         _description.appendTo(_userDesc);
+        _userDesc.appendTo(_imgPost);
         _lastcommentsContainer.appendTo(_imgPost);
         _commentPreview.appendTo(_lastcommentsContainer);
         _textboxContainer.appendTo(_imgPost);
@@ -83,5 +107,73 @@ $(document).ready(function() {
         _imgPost.appendTo(feed);
     }
 
-    
+    function videoPost() {
+        let _videoPost=$("<div>").attr("class","post");
+        let _videoContainer=$("<div>").attr("class","video-container");
+        let _video=$("<video loop muted controls>").attr({"class":"video","src":"../../img/video.mp4"}).hover( hoverVideo, hideVideo );
+        let _reactionBar=$("<div>").attr("class","reaction-bar");
+        let _btnLike=$("<button>").attr("class","like unclicked");
+        let _likeImage=$("<img>").attr('src', '../../img/heart-unclicked.png');
+        let _btnDislike=$("<button>").attr("class","dislike unclicked");
+        let _dislikeImage=$("<img>").attr('src', '../../img/broken-heart-unclicked.png');
+        let _userDesc=$("<div>").attr("class","userDesc");
+        let _username=$("<a>").attr({"class":"username","href":"#"}).html("username");
+        let _description=$("<div>").attr("class","description").html(" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lacinia felis et consequat venenatis. Suspendisse bibendum dui nisi, eget molestie sem rhoncus eu. Phasellus a leo finibus, tempus magna malesuada, ullamcorper erat. Proin vitae tellus non metus placerat euismod sit amet vel lectus. Praesent vel mollis dui.");
+        let _lastcommentsContainer=$("<div>").attr("class","lastcomments-container");
+        let _commentPreview=$("<div>").attr("class","comment-preview");
+        let _textboxContainer=$("<div>").attr("class","textbox-container");
+        let _txtComment=$("<input>").attr({"type":"text","class":"form-control txtComment","placeholder":"Scrivi un commento..."});
+        let _blankSpace=$("<div>").attr("class","blank-space");
+        
+        _videoContainer.appendTo(_videoPost);
+        _video.appendTo(_videoContainer);
+        _reactionBar.appendTo(_videoPost);
+        _btnLike.appendTo(_reactionBar).on('click', clickLike);
+        _likeImage.appendTo(_btnLike);
+        _btnDislike.appendTo(_reactionBar).on('click',clickDislike);
+        _dislikeImage.appendTo(_btnDislike);
+        _username.appendTo(_userDesc);
+        _description.appendTo(_userDesc);
+        _userDesc.appendTo(_videoPost);
+        _lastcommentsContainer.appendTo(_videoPost);
+        _commentPreview.appendTo(_lastcommentsContainer);
+        _textboxContainer.appendTo(_videoPost);
+        _txtComment.appendTo(_textboxContainer);
+        _blankSpace.appendTo(_videoPost);
+        _videoPost.appendTo(feed);
+    }
+
+    function textPost() {
+        let _textPost=$("<div>").attr("class","post");
+        let _textContainer=$("<div>").attr("class","text-container");
+        let _text=$("<p>").html("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lacinia felis et consequat venenatis. Suspendisse bibendum dui nisi, eget molestie sem rhoncus eu. Phasellus a leo finibus, tempus magna malesuada, ullamcorper erat. Proin vitae tellus non metus placerat euismod sit amet vel lectus. Praesent vel mollis dui.");
+        let _reactionBar=$("<div>").attr("class","reaction-bar-text");
+        let _btnLike=$("<button>").attr("class","like unclicked");
+        let _likeImage=$("<img>").attr('src', '../../img/heart-unclicked.png');
+        let _btnDislike=$("<button>").attr("class","dislike unclicked");
+        let _dislikeImage=$("<img>").attr('src', '../../img/broken-heart-unclicked.png');
+        let _userDesc=$("<div>").attr("class","userDesc");
+        let _username=$("<a>").attr({"class":"username","href":"#"}).html("username");
+        let _lastcommentsContainer=$("<div>").attr("class","lastcomments-container");
+        let _commentPreview=$("<div>").attr("class","comment-preview");
+        let _textboxContainer=$("<div>").attr("class","textbox-container");
+        let _txtComment=$("<input>").attr({"type":"text","class":"form-control txtComment","placeholder":"Scrivi un commento..."});
+        let _blankSpace=$("<div>").attr("class","blank-space");
+        
+        _textContainer.appendTo(_textPost);
+        _text.appendTo(_textContainer);
+        _btnLike.appendTo(_reactionBar).on('click', clickLike);
+        _likeImage.appendTo(_btnLike);
+        _btnDislike.appendTo(_reactionBar).on('click',clickDislike);
+        _dislikeImage.appendTo(_btnDislike);
+        _username.appendTo(_userDesc);
+        _userDesc.appendTo(_textPost);
+        _lastcommentsContainer.appendTo(_textPost);
+        _commentPreview.appendTo(_lastcommentsContainer);
+        _textboxContainer.appendTo(_textPost);
+        _txtComment.appendTo(_textboxContainer);
+        _blankSpace.appendTo(_textPost);
+        _reactionBar.appendTo(_textPost);
+        _textPost.appendTo(feed);
+    }
 });
