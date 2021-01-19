@@ -15,26 +15,25 @@
 
   <body>
     <div class="jumbotron bg-dark text-center" id="jumbotron">
-      <h1>Tagaru</h1>
+      <h1 id="title"></h1>
     </div>
-
 
     <div class="row" id="wrapper">
       <div class="col-sm-3" id="chat">
-        <iframe src="pages/chat/chat.html"></iframe>
+        <iframe id="chats" src="pages/chat/chat.html"></iframe>
       </div>
       <div class="col-sm-6" id="feed">
-        <iframe src="pages/feed/feed.html"></iframe>
+        <iframe id="center" src="pages/feed/feed.html"></iframe>
       </div>
       <div class="col-sm-3" id="activity">
-        <iframe src="pages/activity/activity.html"></iframe>
+        <iframe id="activities" src="pages/activity/activity.html"></iframe>
       </div>
     </div>
 
     <div id="navbar">
       <form class="form-inline">
-        <button class="nav-btn" type="button"><img src="img/white-home.png"></button>
-        <button class="nav-btn" type="button"><img src="img/search.png"></button>
+        <button class="nav-btn" id="btnHome" type="button"><img src="img/white-home.png"></button>
+        <button class="nav-btn" id="btnSearch" type="button"><img src="img/search.png"></button>
         <button class="nav-btn" type="button"></button>
         <button class="nav-btn" type="button"></button>
         <button class="nav-btn" type="button"></button>

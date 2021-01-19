@@ -40,7 +40,9 @@ $(document).ready(function() {
             _btnlike.removeClass("clicked");
             _btnlike.addClass("unclicked");
         }
-            
+        let request=inviaRichiesta("POST", "/api/richiestaPOST", {"reaction":"like"});
+        request.done(function(data) {console.log(data)});
+        request.fail(errore);    
     }
 
     function clickDislike(){
@@ -68,7 +70,9 @@ $(document).ready(function() {
             _btndislike.removeClass("clicked");
             _btndislike.addClass("unclicked");
         }
-            
+        let request=inviaRichiesta("POST", "/api/richiestaPOST", {"reaction":"dislike"});
+        request.done(function(data) {console.log(data)});
+        request.fail(errore);   
     }
 
     function imagePost() {
@@ -95,6 +99,16 @@ $(document).ready(function() {
         _btnLike.appendTo(_reactionBar).on('click', clickLike);
         _likeImage.appendTo(_btnLike);
         _btnDislike.appendTo(_reactionBar).on('click',clickDislike);
+        $(".like").on("click",function(){
+            let request=inviaRichiesta("POST", "/api/richiestaPOST", {"reaction":"like"});
+            request.done(function(data) {console.log(data)});
+            request.fail(errore); 
+        });
+        $(".dislike").on("click",function(){
+            let request=inviaRichiesta("POST", "/api/richiestaPOST", {"reaction":"dislike"});
+            request.done(function(data) {console.log(data)});
+            request.fail(errore); 
+        });
         _dislikeImage.appendTo(_btnDislike);
         _username.appendTo(_userDesc);
         _description.appendTo(_userDesc);
@@ -177,3 +191,33 @@ $(document).ready(function() {
         _textPost.appendTo(feed);
     }
 });
+
+/* ********************************************* */
+
+function inviaRichiesta(method, url, parameters = "") {
+    let contentType;
+    if (method.toUpperCase == "GET") contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+    else
+    {
+        contentType = "application/json;charset=utf-8";
+        parameters=JSON.stringify(parameters);
+    }
+
+    return $.ajax({
+        "url": url, //default: currentPage
+        "type": method,
+        "data": parameters,
+        "contentType": contentType,
+        "dataType": "json",
+        "timeout": 5000
+    });
+}
+
+function errore(jqXHR, testStatus, strError) {
+    if (jqXHR.status == 0)
+        alert("Connection refused or Server timeout");
+    else if (jqXHR.status == 200)
+        alert("Errore Formattazione dati\n" + jqXHR.responseText);
+    else
+        alert("Server Error: " + jqXHR.status + " - " + jqXHR.responseText);
+}

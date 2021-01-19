@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/IncubuSpirit/social_boy/issues"
   },
-  "homepage": "https://github.com/IncubuSpirit/social_boy#readme"
+  "homepage": "https://github.com/IncubuSpirit/social_boy#readme",
+  "dependencies": {
+    "headers": "^0.9.6"
+  }
 }
