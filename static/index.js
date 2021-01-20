@@ -40,7 +40,6 @@ $(document).ready(function() {
     /*********************************** functions **************************************/
     function controllaLogin(){
         _email=txtEmail.val();
-        console.log(_email);
         _password=txtPassword.val();
         if (_email == "" && _password == "") {
             openSnackbar("Inserire l'email e la password!"); 
@@ -64,7 +63,7 @@ $(document).ready(function() {
 					errore(jqXHR, test_status, str_error);
 			});
 			request.done(function(data) {
-				window.location.href = "index.html"
+				window.location.href = "pages/register/register.html"
 			});	
         }
     }
@@ -102,30 +101,44 @@ $(document).ready(function() {
 
 /* ********************* u can't touch this ************************ */
 
-function inviaRichiesta(method, url, parameters = "") {
+function inviaRichiesta(method, url, parameters = {}) {
     let contentType;
-    if (method.toUpperCase == "GET") contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+    if (method.toUpperCase() == "GET")
+    {
+        contentType = "application/x-www-form-urlencoded; charset=UTF-8"
+    }
     else
     {
-        contentType = "application/json;charset=utf-8";
-        parameters=JSON.stringify(parameters);
+        contentType = "application/json; charset=UTF-8"
+        parameters = JSON.stringify(parameters);
     }
 
     return $.ajax({
-        "url": url, //default: currentPage
-        "type": method,
-        "data": parameters,
-        "contentType": contentType,
-        "dataType": "json",
-        "timeout": 5000
+        url: url, //default: currentPage
+        type: method,
+        data: parameters,
+        contentType: contentType,
+        dataType: "json",
+        timeout: 5000
     });
 }
 
+
 function errore(jqXHR, testStatus, strError) {
     if (jqXHR.status == 0)
-        alert("Connection refused or Server timeout");
+    {
+        swal("Error!", "Connection refused or Server timeout", "error");
+    }
+    else if(jqXHR.status == 403)
+    {
+        window.location.href="login.html";
+    }
     else if (jqXHR.status == 200)
-        alert("Errore Formattazione dati\n" + jqXHR.responseText);
+    {
+        swal("Error!", "Data format uncorrect: " + jqXHR.responseText, "error");
+    }
     else
-        alert("Server Error: " + jqXHR.status + " - " + jqXHR.responseText);
+    {
+        swal("Error!", "Server Error: " + jqXHR.status + " - " + jqXHR.responseText, "error");
+    }
 }
