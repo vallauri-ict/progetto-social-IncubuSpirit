@@ -32,15 +32,3 @@ function showPreview(event){
     }
   }
 }
-
-  
-
-    function imageIsLoaded(e) {
-        result = e.target.result;
-        $('#video-preview').attr('src', '');
-        $('#image-preview').attr('src', result);
-    };
-    function videoIsLoaded(e) {
-      result = e.target.result;
-      
-  };
