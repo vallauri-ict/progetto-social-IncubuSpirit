@@ -20,15 +20,17 @@ function hideVideo(e) {
 function showPreview(event){
   var src = URL.createObjectURL(event.target.files[0]);
   if(event.target.files.length > 0){
-    var mimeType=this.files[0]['type'];
+    var mimeType=event.target.files[0]['type'];
     if(mimeType.split('/')[0] === 'image'){
-      $('#video-preview').attr('src', '');
-      $('#image-preview').attr('src', src);
+      document.getElementById("image-preview").style.display = "block";
+      document.getElementById("image-preview").src = src;
+      document.getElementById("video-preview").style.display = "none";
     }
 
     if(mimeType.split('/')[0] === 'video'){
-      $('#image-preview').attr('src', '');
-      $('#video-preview').attr({'src': src,'display':'block'});
+      document.getElementById("image-preview").style.display = "none";
+      document.getElementById("video-preview").style.display = "block";
+      document.getElementById("video-preview").src = src;
     }
   }
 }
