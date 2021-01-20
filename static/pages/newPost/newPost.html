@@ -19,7 +19,8 @@
             <label for="file-ip-1">Carica File</label>
             <input type="file" id="file-ip-1" accept="video/*,image/*" onchange="showPreview(event);">
             <div class="preview">
-                <img id="file-ip-1-preview">
+                <img id="image-preview">
+                <video id="video-preview" loop muted controls onchange="showPreview(event)"></video>
             </div>
             <input type="text" id="description" placeholder="Descrizione" class="form-control">
             <input type="button" id="btnPublish" value="Pubblica" class="btn btn-outline-light">

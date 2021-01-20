@@ -62,3 +62,9 @@ body{
     display:none;
     margin-top:10px;
   }
+
+  .form-input video {
+    width:100%;
+    display:none;
+    margin-top:10px;
+  }
