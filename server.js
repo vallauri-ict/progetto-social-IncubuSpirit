@@ -6,7 +6,7 @@ const cors=require("cors");
 const bodyParser=require("body-parser");
 const bcrypt=require("bcryptjs");
 const jwt=require("jsonwebtoken");
-
+const session = require('express-session');
 const app = express();
 const HEADERS = require("headers");
 const PORT = 1337;
@@ -31,17 +31,22 @@ server.listen(PORT, function () {
 init();
 
 app.use(cors());
+
+//Route di lettura dei parametri post
+app.use(bodyParser.urlencoded({ "extended": true }));
+app.use(bodyParser.json());
+
 app.use(express.json({ "limit": "50mb" }));
 app.set("json spaces", 4);
 
 function init() {
-    fs.readFile("static/error.html", function (err, data) {
+    fs.readFile("./static/error.html", function (err, data) {
         if (!err)
             paginaErrore = data.toString();
         else
             paginaErrore = "<h1>Risorsa non trovata</h1>";
     });
-    fs.readFile("keys/private.key", function(err,data){
+    fs.readFile("./keys/private.key", function(err,data){
         if(!err){
             PRIVATE_KEY=data.toString();
         }
@@ -60,10 +65,6 @@ app.use('/', function (req, res, next) {
     console.log(">>>>>>>>>> " + req.method + ":" + req.originalUrl);
     next();
 });
-
-//Route di lettura dei parametri post
-app.use(bodyParser.urlencoded({ "extended": true }));
-app.use(bodyParser.json());
 
 //Log dei parametri
 app.use("/", function (req, res, next) {
@@ -100,17 +101,17 @@ app.post('/api/login', function(req, res, next) {
                     res.status(500).send("Internal Error in Query Execution");
                 else {
                     if (dbUser == null)
-                        res.status(401).send("Username or Password non validi");
+                        res.status(401).send("Email or Password non validi");
                     else {
                         //req.body.password --> password in chiaro inserita dall'utente
                         //dbUser.password   --> password cifrata contenuta nel DB
                         //Il metodo compare() cifra req.body.password e la va a confrontare con dbUser.password
-                        bcrypt.compare(req.body.password, dbUser.password, function(err, ok) {
+                        bcrypt.compare(req.body.pass, dbUser.password, function(err, ok) {
                             if (err)
                                 res.status(500).send("Internal Error in bcrypt compare");
                             else {
                                 if (!ok)
-                                    res.status(401).send("Username or Password not allowed");
+                                    res.status(401).send("Email or Password not allowed");
                                 else {
                                     let token = createToken(dbUser);                                  
                                     writeCookie(res, token);
@@ -127,9 +128,9 @@ app.post('/api/login', function(req, res, next) {
     });
 });
 
-app.get("/", controllaToken);
+app.post("/", controllaToken);
 
-app.get("static/index.html", controllaToken);
+app.post("./static/index.html", controllaToken);
 
 app.use("/api", controllaToken);
 
@@ -160,7 +161,7 @@ function controllaToken(req, res, next) {
 }
 
 //Route relativa alle risorse statiche
-app.use('/', express.static("static/"));
+app.use('/', express.static("./static"));
 
 function inviaErrore(req, res, cod, errMex)
 {
@@ -251,6 +252,7 @@ app.get("/api/getAccount", function(req, res, next){
             let collection = db.collection("accounts");
 
             let id=req.payload["_id"];
+            console.log(id);
             collection.findOne({"_id":id}, function(err, data){
                 if(err)
                 {
@@ -260,7 +262,7 @@ app.get("/api/getAccount", function(req, res, next){
                 {
                     res.send(data["email"].reverse());
                 }
-            client.close();
+                client.close();
             });
         }
     });
@@ -287,7 +289,7 @@ app.use(function (err, req, res, next) {
         console.log(err.stack);
         err.codice = 500;
         err.message = "Internal Server Error";
-        server.close()
+        server.close();
     }
     res.status(err.codice);
     res.send(err.message);
