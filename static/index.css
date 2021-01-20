@@ -133,6 +133,7 @@ iframe {
 
 /* Add styles to the form container */
 .form-container {
+	color:black;
   max-width: 300px;
   padding: 10px;
   background-color: white;
