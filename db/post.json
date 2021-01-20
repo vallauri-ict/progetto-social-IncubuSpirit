@@ -2,7 +2,9 @@
     { 
         "_id":{"username":"incubuSpirit","numpost":1},
         "content":"../static/img/yoda.jpeg",
-        "descrizione":
+        "descrizione":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lacinia felis et consequat venenatis. Suspendisse bibendum dui nisi, eget molestie sem rhoncus eu. Phasellus a leo finibus, tempus magna malesuada, ullamcorper erat. Proin vitae tellus non metus placerat euismod sit amet vel lectus. Praesent vel mollis dui.",
+        "type":"img",
+        "dataup":"2020-1-20T12:00:00.000Z"
     },
     {
         "_id":2,

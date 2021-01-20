@@ -28,6 +28,21 @@ server.listen(PORT, function () {
     console.log("Server in ascolto sulla porta " + PORT);
 });
 
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/static/index.html');
+});
+
+/*app.post('/login', (req, res) => {
+    // Insert Login Code Here
+    let email = req.body.email;
+    let password = req.body.pass;
+    res.send(`Username: ${username} Password: ${password}`);
+});
+
+app.get('/login', (req, res) => {
+  res.sendFile(__dirname + '/static/index.html');
+});*/
+
 init();
 
 app.use(cors());
