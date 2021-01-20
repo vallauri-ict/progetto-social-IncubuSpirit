@@ -31,11 +31,11 @@ function showPreview(event){
 
 //ie image/jpeg will be ['image','jpeg'] and we keep the first value
     if(mimeType.split('/')[0] === 'image'){
-       imageIsLoaded;
+       imageIsLoaded();
     }
 
     if(mimeType.split('/')[0] === 'video'){
-      videoIsLoaded;
+      videoIsLoaded();
    }
 
     function imageIsLoaded(e) {
