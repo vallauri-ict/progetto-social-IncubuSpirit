@@ -18,25 +18,31 @@ function hideVideo(e) {
 }
 
 function showPreview(event){
-    if(event.target.files.length > 0){
-      var src = URL.createObjectURL(event.target.files[0]);
-      var preview = document.getElementById("file-ip-1-preview");
-      preview.src = src;
-      preview.style.display = "block";
-    }
-  }
-
-  var mimeType=this.files[0]['type'];//mimeType=image/jpeg or application/pdf etc...
-
-
-//ie image/jpeg will be ['image','jpeg'] and we keep the first value
+  var src = URL.createObjectURL(event.target.files[0]);
+  if(event.target.files.length > 0){
+    var mimeType=this.files[0]['type'];
     if(mimeType.split('/')[0] === 'image'){
+<<<<<<< HEAD
        imageIsLoaded();
     }
 
     if(mimeType.split('/')[0] === 'video'){
       videoIsLoaded();
    }
+=======
+      $('#video-preview').attr('src', '');
+      $('#image-preview').attr('src', src);
+    }
+
+    if(mimeType.split('/')[0] === 'video'){
+      $('#image-preview').attr('src', '');
+      $('#video-preview').attr({'src': src,'display':'block'});
+    }
+  }
+}
+
+  
+>>>>>>> 401ff3eb073bcf1ab23f71090a4b912b13a8c68a
 
     function imageIsLoaded(e) {
         result = e.target.result;
@@ -45,6 +51,5 @@ function showPreview(event){
     };
     function videoIsLoaded(e) {
       result = e.target.result;
-      $('#video-preview').attr('src', '');
-      $('#image-preview').attr('src', result);
+      
   };
