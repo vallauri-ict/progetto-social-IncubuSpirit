@@ -1,0 +1,22 @@
+[
+    { 
+        "_id":{"username":"incubuSpirit","numpost":1},
+        "content":"../static/img/yoda.jpeg",
+        "descrizione":
+    },
+    {
+        "_id":2,
+        "propic": "",
+        "username": "incubuSpirit",
+        "nome": "Alex",
+        "cognome": "Stefirca",
+        "sesso": "Uomo",
+        "dataNascita": {
+            "$date": "2001-13-01T23:00:00.000Z"
+        },
+        "email": "p.stefirca.0882@vallauri.edu",
+        "password":"pa55word",
+        "numTel": "3802128583",
+        "admin": true
+    }
+]
