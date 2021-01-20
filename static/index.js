@@ -7,6 +7,7 @@ $(document).ready(function() {
     let center=$("#center");
     let btnHome=$("#btnHome");
     let btnSearch=$("#btnSearch");
+    let btnNewPost=$("#btnNewPost");
     let btnProfile=$("#btnProfile").on("click",openForm);
     let btnCloseForm=$("#btnCloseForm").on("click",closeForm);
     let txtEmail=$("#txtEmail");
@@ -16,6 +17,7 @@ $(document).ready(function() {
     let btnLogin=$("#btnLogin").on("click",controllaLogin);
     typeWriter();
 
+    /*********************************** navbar buttons **************************************/
     btnSearch.on("click",function(){
         center.attr("src","pages/search/search.html");
         i=0;
@@ -28,7 +30,14 @@ $(document).ready(function() {
         document.getElementById("title").innerHTML="";
         typeWriter();
     });
+    btnNewPost.on("click",function(){
+        center.attr("src","pages/newPost/newPost.html");
+        i=0;
+        document.getElementById("title").innerHTML="";
+        typeWriter();
+    })
 
+    /*********************************** functions **************************************/
     function controllaLogin(){
         _email=txtEmail.val();
         _password=txtPassword.val();
@@ -90,7 +99,7 @@ $(document).ready(function() {
     }
 });
 
-/* ********************************************* */
+/* ********************* u can't touch this ************************ */
 
 function inviaRichiesta(method, url, parameters = {}) {
     let contentType;
