@@ -7,8 +7,10 @@ $(document).ready(function() {
     let center=$("#center");
     let btnHome=$("#btnHome");
     let btnSearch=$("#btnSearch");
+    let btnNewPost=$("#btnNewPost");
     typeWriter();
 
+    /*********************************** navbar buttons **************************************/
     btnSearch.on("click",function(){
         center.attr("src","pages/search/search.html");
         i=0;
@@ -21,7 +23,14 @@ $(document).ready(function() {
         document.getElementById("title").innerHTML="";
         typeWriter();
     });
+    btnNewPost.on("click",function(){
+        center.attr("src","pages/newPost/newPost.html");
+        i=0;
+        document.getElementById("title").innerHTML="";
+        typeWriter();
+    })
 
+    /*********************************** functions **************************************/
     function typeWriter() {
         if (i < txt.length) {
             document.getElementById("title").innerHTML += txt.charAt(i);
@@ -31,7 +40,7 @@ $(document).ready(function() {
     }
 });
 
-/* ********************************************* */
+/* ********************* u can't touch this ************************ */
 
 function inviaRichiesta(method, url, parameters = "") {
     let contentType;
