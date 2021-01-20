@@ -100,12 +100,12 @@ $(document).ready(function() {
         _likeImage.appendTo(_btnLike);
         _btnDislike.appendTo(_reactionBar).on('click',clickDislike);
         $(".like").on("click",function(){
-            let request=inviaRichiesta("POST", "/api/richiestaPOST", {"reaction":"like"});
+            let request=inviaRichiesta("POST", "/api/richiestaPOSTReactions", {"reaction":"like"});
             request.done(function(data) {console.log(data)});
             request.fail(errore); 
         });
         $(".dislike").on("click",function(){
-            let request=inviaRichiesta("POST", "/api/richiestaPOST", {"reaction":"dislike"});
+            let request=inviaRichiesta("POST", "/api/richiestaPOSTReactions", {"reaction":"dislike"});
             request.done(function(data) {console.log(data)});
             request.fail(errore); 
         });
