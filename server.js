@@ -265,6 +265,7 @@ app.get("/api/getAccount", function(req, res, next){
         }
     });
 });
+
 /********** Route di gestione degli errori **********/
 
 app.use("/", function (req, res, next) {
