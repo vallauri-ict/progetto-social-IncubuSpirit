@@ -256,35 +256,6 @@ function createCookie(name, expires, httponly=true, path="/")
     
 }
 
-//gestione risposte richieste
-app.get("/api/getAccount", function(req, res, next){
-    mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function(err, client) {
-        if (err)
-        {
-            res.status(503).send("Errore di connessione al database.");
-        }
-        else
-        {
-            let db = client.db(DBNAME);
-            let collection = db.collection("accounts");
-
-            let id=req.payload["_id"];
-            console.log(id);
-            collection.findOne({"_id":id}, function(err, data){
-                if(err)
-                {
-                    res.status(500).send("Internal Error.");
-                }
-                else
-                {
-                    res.send(data["email"].reverse());
-                }
-                client.close();
-            });
-        }
-    });
-});
-
 /********** Route di gestione degli errori **********/
 
 app.use("/", function (req, res, next) {
