@@ -1,14 +1,5 @@
 "use strict";
 
-function showPreview(event){
-    if(event.target.files.length > 0){
-      var src = URL.createObjectURL(event.target.files[0]);
-      var preview = document.getElementById("file-ip-1-preview");
-      preview.src = src;
-      preview.style.display = "block";
-    }
-  }
-
 $(document).ready(function () {
     let i = 0;
     let txt = 'Tagaru'; /* The text */
@@ -28,6 +19,15 @@ $(document).ready(function () {
     let _password = passwordInput.val();
     let btnRegister = $("#btnRegister").on("click", controllaRegistrazione);
     typeWriter();
+
+    let _preview=$("#file-ip-1").on("change",function(){
+        if(this.files.length > 0){
+        var src = URL.createObjectURL(this.files[0]);
+        var preview = document.getElementById("image-preview");
+        preview.src = src;
+        preview.style.display = "block";
+      }
+    });
 
     function controllaRegistrazione(){
         if (propicInput.val()=="")
