@@ -29,11 +29,9 @@
       </div>
     </div>
     <div class="form-popup" id="myForm">
-<<<<<<< HEAD
       <form class="form-container" action="/login" method="post">
-=======
       <form class="form-container" action="api/login" method="post">
->>>>>>> 79a69af01925b853f2d064a7a9448ee821e4f60b
+      <form class="form-container" action="/login" method="post">
           <h1>Login</h1>
       
           <label for="email"><b>Email</b></label>
@@ -42,7 +40,8 @@
           <label for="pass"><b>Password</b></label>
           <input type="password" id="txtPassword" placeholder="Enter Password" name="pass" required>
       
-          <button type="submit" id="btnLogin" class="btn">Login</a>
+          <button type="submit" id="btnLogin" class="btn" formaction="/login">Login</button>
+          <button type="submit" id="btnRegister" class="btn btn-primary btn-lg active" formaction="/register">Register</a>
         <button id="btnCloseForm" class="btn cancel">Close</button>
       </form>
     </div>
