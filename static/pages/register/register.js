@@ -20,7 +20,7 @@ $(document).ready(function () {
     let btnRegister = $("#btnRegister").on("click", controllaRegistrazione);
     typeWriter();
 
-    let _preview=$("#file-ip-1").on("change",function(){
+    let _preview=$("#file-ip-1").on("load",function(){
         if(this.files.length > 0){
         var src = URL.createObjectURL(this.files[0]);
         var preview = document.getElementById("image-preview");
