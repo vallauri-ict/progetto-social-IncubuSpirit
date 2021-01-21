@@ -34,77 +34,75 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/static/index.html');
 });
 
-/*app.post('/login', (req, res) => {
-    // Insert Login Code Here
-    let email = req.body.email;
-    let password = req.body.pass;
-    res.send(`Username: ${username} Password: ${password}`);
+// To support URL-encoded bodies
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// To parse cookies from the HTTP Request
+app.use(cookieParser());
+
+app.get('/register', (req, res) => {
+    res.sendFile(__dirname + '/static/pages/register/register.html');
 });
 
 app.get('/login', (req, res) => {
-  res.sendFile(__dirname + '/static/index.html');
-});*/
+    res.sendFile(__dirname + '/static/index.html');
+});
 
-init();
+const crypto = require('crypto');
 
-app.use(cors());
-
-//Route di lettura dei parametri post
-app.use(bodyParser.urlencoded({ "extended": true }));
-app.use(bodyParser.json());
-
-app.use(express.json({ "limit": "50mb" }));
-app.set("json spaces", 4);
-
-function init() {
-    fs.readFile("./static/error.html", function (err, data) {
-        if (!err)
-            paginaErrore = data.toString();
-        else
-            paginaErrore = "<h1>Risorsa non trovata</h1>";
-    });
-    fs.readFile("./keys/private.key", function(err,data){
-        if(!err){
-            PRIVATE_KEY=data.toString();
-        }
-        else{
-            //Richiamo la route di gestione degli errori
-            //next(err);
-            console.log("File mancante: private.key");
-            server.close();
-        }
-    });
+const getHashedPassword = (password) => {
+    const sha256 = crypto.createHash('sha256');
+    const hash = sha256.update(password).digest('base64');
+    return hash;
 }
 
-//Log della richiesta
-app.use('/', function (req, res, next) {
-    //originalUrl contiene la risorsa richiesta
-    console.log(">>>>>>>>>> " + req.method + ":" + req.originalUrl);
-    next();
+app.post('/register', (req, res) => {
+    const { propic, username, nome, cognome, sesso, dataNascita, email, password, numTel, admin } = req.body;
+
+    // Check if user with the same email is also registered
+    if (users.find(user => user.email === email)) {
+
+        res.render('register', {
+            message: 'User already registered.',
+            messageClass: 'alert-danger'
+        });
+
+        return;
+    }
+
+    const hashedPassword = getHashedPassword(password);
+
+    // Store user into the database if you are using one
+    users.push({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword
+    });
+
+    res.render('login', {
+        message: 'Registration Complete. Please login to continue.',
+        messageClass: 'alert-success'
+    });
 });
 
-//Log dei parametri
-app.use("/", function (req, res, next) {
-    if (Object.keys(req.query).length > 0)
-    {
-        console.log("Parametri GET: " + JSON.stringify(req.query));
-    }
-    if (Object.keys(req.body).length > 0)
-    {
-        console.log("Parametri BODY: " + JSON.stringify(req.body));
-    }
-    next();
+app.post('/registerComplete', function(req, res, next) {
+    mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function(err, client) {
+        let propic=
+        if (err)
+            res.status(503).send("Errore di connessione al database");
+        else {
+            const db = client.db(DBNAME);
+            const collection = db.collection("accounts");
+
+            let email = req.body.email;
+            collection.insert
+            
+        }
+    });
 });
 
-//Route per fare in modo che il server risponda a qualunque richiesta anche extra-domain.
-app.use("/", function (req, res, next) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    next();
-})
-
-/********** Route specifiche **********/
-//Per tutte le pagine sulle quali voglio controllare il token, aggiungo un listener di questo tipo
-app.post('/api/login', function(req, res, next) {
+app.post('/login', function(req, res, next) {
     mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function(err, client) {
         if (err)
             res.status(503).send("Errore di connessione al database");
@@ -118,7 +116,7 @@ app.post('/api/login', function(req, res, next) {
                     res.status(500).send("Internal Error in Query Execution");
                 else {
                     if (dbUser == null)
-                        res.status(401).send("Email or Password non validi");
+                        res.status(401).send("Email o Password non validi");
                     else {
                         //req.body.password --> password in chiaro inserita dall'utente
                         //dbUser.password   --> password cifrata contenuta nel DB
@@ -128,7 +126,7 @@ app.post('/api/login', function(req, res, next) {
                                 res.status(500).send("Internal Error in bcrypt compare");
                             else {
                                 if (!ok)
-                                    res.status(401).send("Email or Password not allowed");
+                                    res.status(401).send("Email o Password non validi");
                                 else {
                                     let token = createToken(dbUser);                                  
                                     writeCookie(res, token);
@@ -145,170 +143,15 @@ app.post('/api/login', function(req, res, next) {
     });
 });
 
-app.post("/", controllaToken);
 
-app.post("./static/index.html", controllaToken);
 
-app.use("/api", controllaToken);
-
-function controllaToken(req, res, next) {
-    let token = readCookie(req);
-    if(token==NO_COOKIES)
-    {
-        inviaErrore(req, res, 403, "Token mancante");
-    }
-    else
-    {
-        jwt.verify(token, PRIVATE_KEY, function(err, payload){
-            if(err)
-            {
-                //se la richiesta non è /api, bisogna mandare la pagina di login
-                inviaErrore(req, res, 403, "Token scaduto o corrotto");
-            }
-            else
-            {
-                // ...vet per scomporlo
-                let newToken=createToken(payload);
-                writeCookie(res, newToken);
-                req.payload=payload;
-                next();
-            }
-        });
-    }   
-}
-
-//Route relativa alle risorse statiche
-app.use('/', express.static("./static"));
-
-function inviaErrore(req, res, cod, errMex)
-{
-    if(req.originalUrl.startsWith("/api/"))
-    {
-        res.status(cod).send(errMex);
-    }
-    else
-    {
-        res.sendFile(`${__dirname}/static/index.html`);
-    }
-}
-
-function readCookie(req){
-    let valoreCookie=NO_COOKIES;
-    if(req.headers.cookie){
-        let cookies=req.headers.cookie.split(";");
-        for(let item of cookies)
-        {
-            item=item.split("="); //item da chiave=valore --> [chiave, valore]
-            if(item[0].includes("token"))
-            {
-                valoreCookie=item[1];
-                break;
-            }
-        }
-        //Trasforma cookies in un array di json
-        //Object.fromEntries(cookies);
-    }
-    return valoreCookie;
-}
-
-//data --> record dell'utente
-function createToken(data){
-    //sign() --> si aspetta come parametro un json con i parametri che si vogliono mettere nel token
-    let json={
-        "_id":data._id,
-        "username":data.username,
-        "iat":data.iat || Math.floor(Date.now()/1000),
-        "exp":Math.floor(Date.now()/1000)+TTL
-    }
-    let token=jwt.sign(json, PRIVATE_KEY);
-    //console.log(token);
-    return token;
-}
-
-function writeCookie(res, token){
-    //set() --> metodo di express che consente di impostare una o più intestazioni nella risposta HTTP
-    res.set("Set-Cookie", createCookie(token, TTL));
-}
-
-function createCookie(name, expires, domain, secure, httponly, path="/")
-{
-    if (typeof expires === 'string' || expires instanceof String)
-    {
-        return `token=${name};expires=${expires};domain=${domain};path=${path};httponly=${httponly};secure=${secure}`
-    } 
-    else
-    {
-        return `token=${name};max-age=${expires};domain=${domain};path=${path};httponly=${httponly};secure=${secure}`
-    }
-    
-}
-
-function createCookie(name, expires, httponly=true, path="/")
-{
-    if (typeof expires === 'string' || expires instanceof String) 
-    {
-        return `token=${name};expires=${expires};path=${path};httponly=${httponly}`
-    } 
-    else
-    {
-        return `token=${name};max-age=${expires};path=${path};httponly=${httponly}`
-    }
-    
-}
-
-//gestione risposte richieste
-app.get("/api/getAccount", function(req, res, next){
-    mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function(err, client) {
-        if (err)
-        {
-            res.status(503).send("Errore di connessione al database.");
-        }
-        else
-        {
-            let db = client.db(DBNAME);
-            let collection = db.collection("accounts");
-
-            let id=req.payload["_id"];
-            console.log(id);
-            collection.findOne({"_id":id}, function(err, data){
-                if(err)
-                {
-                    res.status(500).send("Internal Error.");
-                }
-                else
-                {
-                    res.send(data["email"].reverse());
-                }
-                client.close();
-            });
-        }
-    });
+/*app.post('/login', (req, res) => {
+    // Insert Login Code Here
+    let email = req.body.email;
+    let password = req.body.pass;
+    res.send(`Username: ${username} Password: ${password}`);
 });
 
-/********** Route di gestione degli errori **********/
-
-app.use("/", function (req, res, next) {
-    res.status(404);
-    if (req.originalUrl.startsWith("/api/"))
-    {
-        //res.send('"Risorsa non trovata"'); //non va così bene, perchè content-type viene messo = "text"
-        res.json("Risorsa non trovata"); //La serializzazione viene fatta dal metodo json()
-        //res.send({"ris":"Risorsa non trovata"});
-    }
-    else
-    {
-        res.send(paginaErrore);
-    }
-});
-
-app.use(function (err, req, res, next) {
-    if (!err.codice)
-    {
-        console.log(err.stack);
-        err.codice = 500;
-        err.message = "Internal Server Error";
-        server.close();
-    }
-    res.status(err.codice);
-    res.send(err.message);
-})
+app.get('/login', (req, res) => {
+  res.sendFile(__dirname + '/static/index.html');
+});*/
