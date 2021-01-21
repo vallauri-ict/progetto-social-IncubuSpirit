@@ -19,6 +19,7 @@
   <body>
     <div id="snackbar"></div>
     <div class="row justify-content-md-center" style="margin-top: 30px">
+<<<<<<< HEAD
       <div class="col-md-4">
         <form method="POST" action="/register">
           <div class="form-group">
@@ -66,6 +67,49 @@
           </div>
           <a class="btn btn-primary btn-lg active" href="/registerComplete">Register</a>
         </form>
+=======
+      <div class="col-md-4">  
+            <div class="form-group">
+              <label for="file-ip-1">Carica File</label>
+              <input type="file" id="file-ip-1" accept="image/*" onchange="showPreview(event);">
+              <div class="preview">
+                  <img id="image-preview" name="Propic">
+              </div>
+              </div>
+              <div class="form-group">
+                <input name="Username" type="text" class="form-control" id="usernameInput" placeholder="Username" required>
+              </div> 
+              <div class="form-group">
+                  <input name="Nome" type="text" class="form-control" id="nomeInput" placeholder="Nome" required>
+              </div>  
+              <div class="form-group">
+                  <input name="Cognome" type="text" class="form-control" id="cognomeInput" placeholder="Cognome" required>
+              </div>  
+              <div class="form-group">
+                <label for="dobInput">Data di nascita</label>
+                <input name="DoB" type="date" class="form-control" id="dobInput" required>
+              </div> 
+              <div class="form-group">
+                <select name="Sesso" class="form-control" id="sessoInput">
+                  <option>-- Sesso --</option>
+                  <option value="uomo">Uomo</option>
+                  <option value="donna">Donna</option>
+                  <option value="nonbin">Non binario</option>
+                  <option value="indeciso">Indeciso</option>
+                  <option value="altro">Altro</option>
+                </select>
+            </div>  
+              <div class="form-group">
+                  <input name="Email" type="email" class="form-control" id="emailInput" placeholder="Email" required>
+              </div>  
+              <div class="form-group">
+                  <input name="Password" type="password" class="form-control" id="passwordInput" placeholder="Password" required>
+              </div>  
+              <div class="form-group">
+                <input name="NumTel" type="text" class="form-control" id="numTelInput" placeholder="Numero di telefono" required>
+            </div> 
+            <button method="post" id="btnRegister" type="submit" class="btn btn-primary">Register</button>         
+>>>>>>> 4190e5958cfe6bdec3598bd5f09a1ca5c81d5405
       </div>
     </div>
   </body>

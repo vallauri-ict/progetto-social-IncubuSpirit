@@ -15,6 +15,18 @@ $(document).ready(function() {
     let _email=txtEmail.val();
     let _password=txtPassword.val();
     let btnLogin=$("#btnLogin").on("click",controllaLogin);
+    let btnRegister=$("#btnRegister").on("click",function(){
+        let request = inviaRichiesta("GET", "/api/register");
+			request.fail(function(jqXHR, test_status, str_error) {
+				if (jqXHR.status == 401) {  // unauthorized
+					_lblErrore.show();
+				} else
+					errore(jqXHR, test_status, str_error);
+			});
+			request.done(function(data) {
+				window.location.href = "./pages/register/register.html"
+			});	
+    })
     typeWriter();
 
     /*********************************** navbar buttons **************************************/
@@ -63,7 +75,7 @@ $(document).ready(function() {
 					errore(jqXHR, test_status, str_error);
 			});
 			request.done(function(data) {
-				window.location.href = "pages/register/register.html"
+				window.location.href = "index.html"
 			});	
         }
     }
@@ -131,7 +143,7 @@ function errore(jqXHR, testStatus, strError) {
     }
     else if(jqXHR.status == 403)
     {
-        window.location.href="login.html";
+        window.location.href="pages/register/register.html";
     }
     else if (jqXHR.status == 200)
     {
