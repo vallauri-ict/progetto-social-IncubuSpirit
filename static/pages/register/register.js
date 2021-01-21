@@ -19,14 +19,31 @@ $(document).ready(function () {
     let _password = passwordInput.val();
     let btnRegister = $("#btnRegister").on("click", controllaRegistrazione);
     typeWriter();
+    function typeWriter() {
+        if (i < txt.length) {
+            $("#title").html() += txt.charAt(i);
+            i++;
+            setTimeout(typeWriter, speed);
+        }
+    }
 
-    let _preview=$("#file-ip-1").on("load",function(){
-        if(this.files.length > 0){
+    $("#file-ip-1").on("load",function(){
         var src = URL.createObjectURL(this.files[0]);
-        var preview = document.getElementById("image-preview");
-        preview.src = src;
-        preview.style.display = "block";
-      }
+        if(this.files.length > 0){
+            imagepreviewattr("display","block");
+            imagepreviewattr("src",src);
+        }
+    })
+
+    btnRegister.on("click", function(){
+        let _preview=$("#file-ip-1").on("change",function(){
+                if(this.files.length > 0){
+                var src = URL.createObjectURL(this.files[0]);
+                var preview = $("#image-preview");
+                preview.src = src;
+                preview.style.display = "block";
+            }
+        });
     });
 
     function controllaRegistrazione(){
@@ -52,20 +69,11 @@ $(document).ready(function () {
 					errore(jqXHR, test_status, str_error);
 			});
 			request.done(function(data) {
-				window.location.href = "register.html"
+				window.location.href = "../../index.html";
 			});	
         }
     }
 });
-
-function showPreview(event){
-    var src = URL.createObjectURL(event.target.files[0]);
-    if(event.target.files.length > 0){
-        document.getElementById("image-preview").style.display = "block";
-        document.getElementById("image-preview").src = src;
-    }
-  };
-
   /* ********************* u can't touch this ************************ */
 
 function inviaRichiesta(method, url, parameters = {}) {
@@ -90,7 +98,6 @@ function inviaRichiesta(method, url, parameters = {}) {
     });
 }
 
-
 function errore(jqXHR, testStatus, strError) {
     if (jqXHR.status == 0)
     {
@@ -98,7 +105,7 @@ function errore(jqXHR, testStatus, strError) {
     }
     else if(jqXHR.status == 403)
     {
-        window.location.href="register.html";
+        window.location.href="../../index.html";
     }
     else if (jqXHR.status == 200)
     {
@@ -109,3 +116,4 @@ function errore(jqXHR, testStatus, strError) {
         swal("Error!", "Server Error: " + jqXHR.status + " - " + jqXHR.responseText, "error");
     }
 }
+
