@@ -1,25 +1,24 @@
 "use strict";
 
-$(document).ready(function() {
+$(document).ready(function () {
     let i = 0;
     let txt = 'Tagaru'; /* The text */
     let speed = 70; /* The speed/duration of the effect in milliseconds */
-    let propicInput=$("#propicInput");
-    let imagepreview=$("#image-preview");
-    let usernameInput=$("#usernameInput");
-    let nomeInput=$("#nomeInput");
-    let cognomeInput=$("#cognomeInput");
-    let dobInput=$("#dobInput");
-    let sessoInput=$("#sessoInput");
-    let dobInput=$("#dobInput");
-    let emailInput=$("#emailInput");
-    let passwordInput=$("#passwordInput");
-    let numTelInput=$("#numTelInput");
-    let _email=emailInput.val();
-    let _password=passwordInput.val();
-    let btnRegister=$("#btnRegister").on("click",controllaRegistrazione);
+    let propicInput = $("#propicInput");
+    let imagepreview = $("#image-preview");
+    let usernameInput = $("#usernameInput");
+    let nomeInput = $("#nomeInput");
+    let cognomeInput = $("#cognomeInput");
+    let dobInput = $("#dobInput");
+    let sessoInput = $("#sessoInput");
+    let dobInput = $("#dobInput");
+    let emailInput = $("#emailInput");
+    let passwordInput = $("#passwordInput");
+    let numTelInput = $("#numTelInput");
+    let _email = emailInput.val();
+    let _password = passwordInput.val();
+    let btnRegister = $("#btnRegister").on("click", controllaRegistrazione);
     typeWriter();
-
     function typeWriter() {
         if (i < txt.length) {
             $("#title").html() += txt.charAt(i);
@@ -37,6 +36,17 @@ $(document).ready(function() {
     })
 
     btnRegister.on("click", function(){
+        let _preview=$("#file-ip-1").on("change",function(){
+                if(this.files.length > 0){
+                var src = URL.createObjectURL(this.files[0]);
+                var preview = $("#image-preview");
+                preview.src = src;
+                preview.style.display = "block";
+            }
+        });
+    });
+
+    function controllaRegistrazione(){
         if (propicInput.val()=="")
             openSnackbar("Inserire l'immagine profilo!"); 
 		else {
@@ -62,9 +72,8 @@ $(document).ready(function() {
 				window.location.href = "../../index.html";
 			});	
         }
-    })
+    }
 });
-
   /* ********************* u can't touch this ************************ */
 
 function inviaRichiesta(method, url, parameters = {}) {
@@ -107,3 +116,4 @@ function errore(jqXHR, testStatus, strError) {
         swal("Error!", "Server Error: " + jqXHR.status + " - " + jqXHR.responseText, "error");
     }
 }
+

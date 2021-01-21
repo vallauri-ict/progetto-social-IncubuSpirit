@@ -124,6 +124,39 @@ a {
   width: 560px; height: 560px;
 }
 
+/********************************* preview ************************************/
+.form-input {
+  width:100%;
+  padding:20px;
+  background:rgba(0,0,0,0);
+  border:2px dashed #555;
+  border-radius:15px;
+}
+.form-input input {
+  display:none;
+}
+.form-input label {
+  display:block;
+  width:100%;
+  height:50px;
+  line-height:50px;
+  text-align:center;
+  background:#333;
+  color:#fff;
+  font-size:15px;
+  font-family:"Open Sans",sans-serif;
+  text-transform:Uppercase;
+  font-weight:600;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.form-input img {
+  width:100%;
+  display:none;
+  margin-top:10px;
+}
+
 /********************************* snackbar *********************************/
 
 /* The snackbar - position it at the bottom and in the middle of the screen */
