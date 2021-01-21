@@ -31,7 +31,7 @@ $(document).ready(function() {
 
     /*********************************** navbar buttons **************************************/
     btnSearch.on("click",function(){
-        center.attr("src","pages/search/search.html");
+        center.attr("src","./pages/search/search.html");
         i=0;
         document.getElementById("title").innerHTML="";
         typeWriter();

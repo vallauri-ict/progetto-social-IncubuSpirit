@@ -11,7 +11,7 @@ const exphbs = require('express-handlebars');
 const cookieParser = require('cookie-parser');
 const app = express();
 const HEADERS = require("headers");
-const PORT = 1337;
+const PORT = process.env.PORT || 1337;
 const DBNAME = "social";
 const TTL=10; //espresso in secondi
 const NO_COOKIES="No cookies found";
@@ -103,6 +103,35 @@ app.use("/", function (req, res, next) {
 })
 
 /********** Route specifiche **********/
+app.post('/register', function(req, res, next) {
+    mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function(err, client) {
+        let propic=req.body.Propic;
+        let username=req.body.Username;
+        let nome=req.body.Nome;
+        let cognome=req.body.Cognome;
+        let dob=req.body.DoB;
+        let sesso=req.body.Sesso;
+        let email=req.body.Email;
+        let password=req.body.Password;
+        let numTel=req.body.NumTel;
+
+        if (err)
+            res.status(503).send("Errore di connessione al database");
+        else {
+            const db = client.db(DBNAME);
+            const collection = db.collection("accounts");
+            collection.insertOne({"propic":propic,"username":username,"nome":nome,"cognome":cognome,"sesso":sesso,"dataNascita":dob,"email":email,"password":password,"numTel":numTel,"admin":false}, function(err, dbUser) {
+                if (err) {
+                    res.status(500).send("Errore inserimento nuovo record\n" + err.message);
+                }
+                else {
+                    res.send(data);
+                }
+                client.close();
+            });
+        }
+    });
+});
 //Per tutte le pagine sulle quali voglio controllare il token, aggiungo un listener di questo tipo
 app.post('/api/login', function(req, res, next) {
     mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function(err, client) {
@@ -270,36 +299,6 @@ app.use("/", function (req, res, next) {
     {
         res.send(paginaErrore);
     }
-});
-
-app.post('/register', function(req, res, next) {
-    mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function(err, client) {
-        let propic=req.body.Propic;
-        let username=req.body.Username;
-        let nome=req.body.Nome;
-        let cognome=req.body.Cognome;
-        let dob=req.body.DoB;
-        let sesso=req.body.Sesso;
-        let email=req.body.Email;
-        let password=req.body.Password;
-        let numTel=req.body.NumTel;
-
-        if (err)
-            res.status(503).send("Errore di connessione al database");
-        else {
-            const db = client.db(DBNAME);
-            const collection = db.collection("accounts");
-            collection.insertOne({"propic":propic,"username":username,"nome":nome,"cognome":cognome,"sesso":sesso,"dataNascita":dob,"email":email,"password":password,"numTel":numTel,"admin":false}, function(err, dbUser) {
-                if (err) {
-                    res.status(500).send("Errore inserimento nuovo record\n" + err.message);
-                }
-                else {
-                    res.send(data);
-                }
-                client.close();
-            });
-        }
-    });
 });
 
 app.use(function (err, req, res, next) {

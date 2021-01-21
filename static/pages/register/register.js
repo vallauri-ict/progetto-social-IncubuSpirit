@@ -1,9 +1,6 @@
 "use strict";
 
 $(document).ready(function () {
-    let i = 0;
-    let txt = 'Tagaru'; /* The text */
-    let speed = 70; /* The speed/duration of the effect in milliseconds */
     let propicInput = $("#propicInput");
     let imagepreview = $("#image-preview");
     let usernameInput = $("#usernameInput");
@@ -18,39 +15,20 @@ $(document).ready(function () {
     let _email = emailInput.val();
     let _password = passwordInput.val();
     let btnRegister = $("#btnRegister").on("click", controllaRegistrazione);
-    typeWriter();
-    function typeWriter() {
-        if (i < txt.length) {
-            $("#title").html() += txt.charAt(i);
-            i++;
-            setTimeout(typeWriter, speed);
-        }
-    }
 
-    $("#file-ip-1").on("load",function(){
+    $("#file-ip-1").on("change",function(){
         var src = URL.createObjectURL(this.files[0]);
         if(this.files.length > 0){
-            imagepreviewattr("display","block");
-            imagepreviewattr("src",src);
+            document.getElementById("image-preview").style.display = "block";
+            document.getElementById("image-preview").src = src;
         }
-    })
-
-    btnRegister.on("click", function(){
-        let _preview=$("#file-ip-1").on("change",function(){
-                if(this.files.length > 0){
-                var src = URL.createObjectURL(this.files[0]);
-                var preview = $("#image-preview");
-                preview.src = src;
-                preview.style.display = "block";
-            }
-        });
     });
 
     function controllaRegistrazione(){
         if (propicInput.val()=="")
             openSnackbar("Inserire l'immagine profilo!"); 
 		else {
-			let request = inviaRichiesta("POST", "/register", 
+			let request = inviaRichiesta("POST", "/login", 
 				{ "Propic": propicInput.attr("src"),
                   "Username": usernameInput.val(),
                   "Nome": nomeInput.val(),
@@ -76,7 +54,7 @@ $(document).ready(function () {
 });
   /* ********************* u can't touch this ************************ */
 
-function inviaRichiesta(method, url, parameters = {}) {
+  function inviaRichiesta(method, url, parameters = {}) {
     let contentType;
     if (method.toUpperCase() == "GET")
     {
@@ -97,6 +75,7 @@ function inviaRichiesta(method, url, parameters = {}) {
         timeout: 5000
     });
 }
+
 
 function errore(jqXHR, testStatus, strError) {
     if (jqXHR.status == 0)
