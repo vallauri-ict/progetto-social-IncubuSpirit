@@ -8,7 +8,7 @@ $(document).ready(function () {
   $("#video-preview").hover(hoverVideo, hideVideo);
 
   _btnPublish.on("click", function () {
-    if(_descrizione.attr("value")!=""||)
+    if(_descrizione.attr("value")!="")
     let request = inviaRichiesta("GET", "/api/newpost",{
 
     });
@@ -19,7 +19,7 @@ $(document).ready(function () {
         errore(jqXHR, test_status, str_error);
     });
     request.done(function (data) {
-      center.attr("src", "pages/feed/feed.html");
+      center.attr("src", "/pages/feed/feed.html");
     });
   });
 });
