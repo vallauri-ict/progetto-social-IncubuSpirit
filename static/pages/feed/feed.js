@@ -11,9 +11,9 @@ $(document).ready(function() {
         $(this).get(0).pause();
     }
 
-    imagePost();
-    videoPost();
-    textPost();
+    imagePost("../../img/yoda.jpeg","looks cool don't ya?","IncubuSpirit");
+    videoPost("../../img/video.mp4","looks cool don't ya?","IncubuSpirit");
+    textPost("looks cool don't ya?","IncubuSpirit");
 
     function clickLike(){
         let _bar=$(this).parent();
@@ -75,18 +75,18 @@ $(document).ready(function() {
         request.fail(errore);   
     }
 
-    function imagePost() {
+    function imagePost(img_url,desc,usname) {
         let _imgPost=$("<div>").attr("class","post");
         let _imgContainer=$("<div>").attr("class","image-container");
-        let _img=$("<img>").attr({"class":"image","src":"../../img/yoda.jpeg"});
+        let _img=$("<img>").attr({"class":"image","src":img_url});
         let _reactionBar=$("<div>").attr("class","reaction-bar");
         let _btnLike=$("<button>").attr("class","like unclicked");
         let _likeImage=$("<img>").attr('src', '../../img/heart-unclicked.png');
         let _btnDislike=$("<button>").attr("class","dislike unclicked");
         let _dislikeImage=$("<img>").attr('src', '../../img/broken-heart-unclicked.png');
         let _userDesc=$("<div>").attr("class","userDesc");
-        let _username=$("<a>").attr({"class":"username","href":"#"}).html("username");
-        let _description=$("<div>").attr("class","description").html(" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lacinia felis et consequat venenatis. Suspendisse bibendum dui nisi, eget molestie sem rhoncus eu. Phasellus a leo finibus, tempus magna malesuada, ullamcorper erat. Proin vitae tellus non metus placerat euismod sit amet vel lectus. Praesent vel mollis dui.");
+        let _username=$("<a>").attr({"class":"username","href":"#"}).html(usname+" - ");
+        let _description=$("<div>").attr("class","description").html(desc);
         let _lastcommentsContainer=$("<div>").attr("class","lastcomments-container");
         let _commentPreview=$("<div>").attr("class","comment-preview");
         let _textboxContainer=$("<div>").attr("class","textbox-container");
@@ -121,18 +121,18 @@ $(document).ready(function() {
         _imgPost.appendTo(feed);
     }
 
-    function videoPost() {
+    function videoPost(video_url,desc,usname) {
         let _videoPost=$("<div>").attr("class","post");
         let _videoContainer=$("<div>").attr("class","video-container");
-        let _video=$("<video loop muted controls>").attr({"class":"video","src":"../../img/video.mp4"}).hover( hoverVideo, hideVideo );
+        let _video=$("<video loop muted controls>").attr({"class":"video","src":video_url}).hover( hoverVideo, hideVideo );
         let _reactionBar=$("<div>").attr("class","reaction-bar");
         let _btnLike=$("<button>").attr("class","like unclicked");
         let _likeImage=$("<img>").attr('src', '../../img/heart-unclicked.png');
         let _btnDislike=$("<button>").attr("class","dislike unclicked");
         let _dislikeImage=$("<img>").attr('src', '../../img/broken-heart-unclicked.png');
         let _userDesc=$("<div>").attr("class","userDesc");
-        let _username=$("<a>").attr({"class":"username","href":"#"}).html("username");
-        let _description=$("<div>").attr("class","description").html(" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lacinia felis et consequat venenatis. Suspendisse bibendum dui nisi, eget molestie sem rhoncus eu. Phasellus a leo finibus, tempus magna malesuada, ullamcorper erat. Proin vitae tellus non metus placerat euismod sit amet vel lectus. Praesent vel mollis dui.");
+        let _username=$("<a>").attr({"class":"username","href":"#"}).html(usname+" - ");
+        let _description=$("<div>").attr("class","description").html(desc);
         let _lastcommentsContainer=$("<div>").attr("class","lastcomments-container");
         let _commentPreview=$("<div>").attr("class","comment-preview");
         let _textboxContainer=$("<div>").attr("class","textbox-container");
@@ -157,17 +157,17 @@ $(document).ready(function() {
         _videoPost.appendTo(feed);
     }
 
-    function textPost() {
+    function textPost(txt,usname) {
         let _textPost=$("<div>").attr("class","post");
         let _textContainer=$("<div>").attr("class","text-container");
-        let _text=$("<p>").html("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lacinia felis et consequat venenatis. Suspendisse bibendum dui nisi, eget molestie sem rhoncus eu. Phasellus a leo finibus, tempus magna malesuada, ullamcorper erat. Proin vitae tellus non metus placerat euismod sit amet vel lectus. Praesent vel mollis dui.");
+        let _text=$("<p>").html(txt);
         let _reactionBar=$("<div>").attr("class","reaction-bar-text");
         let _btnLike=$("<button>").attr("class","like unclicked");
         let _likeImage=$("<img>").attr('src', '../../img/heart-unclicked.png');
         let _btnDislike=$("<button>").attr("class","dislike unclicked");
         let _dislikeImage=$("<img>").attr('src', '../../img/broken-heart-unclicked.png');
         let _userDesc=$("<div>").attr("class","userDesc");
-        let _username=$("<a>").attr({"class":"username","href":"#"}).html("username");
+        let _username=$("<a>").attr({"class":"username","href":"#"}).html(usname);
         let _lastcommentsContainer=$("<div>").attr("class","lastcomments-container");
         let _commentPreview=$("<div>").attr("class","comment-preview");
         let _textboxContainer=$("<div>").attr("class","textbox-container");
@@ -191,33 +191,3 @@ $(document).ready(function() {
         _textPost.appendTo(feed);
     }
 });
-
-/* ********************************************* */
-
-function inviaRichiesta(method, url, parameters = "") {
-    let contentType;
-    if (method.toUpperCase == "GET") contentType = "application/x-www-form-urlencoded; charset=UTF-8";
-    else
-    {
-        contentType = "application/json;charset=utf-8";
-        parameters=JSON.stringify(parameters);
-    }
-
-    return $.ajax({
-        "url": url, //default: currentPage
-        "type": method,
-        "data": parameters,
-        "contentType": contentType,
-        "dataType": "json",
-        "timeout": 5000
-    });
-}
-
-function errore(jqXHR, testStatus, strError) {
-    if (jqXHR.status == 0)
-        alert("Connection refused or Server timeout");
-    else if (jqXHR.status == 200)
-        alert("Errore Formattazione dati\n" + jqXHR.responseText);
-    else
-        alert("Server Error: " + jqXHR.status + " - " + jqXHR.responseText);
-}

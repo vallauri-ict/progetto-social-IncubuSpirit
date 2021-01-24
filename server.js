@@ -145,6 +145,10 @@ app.post('/api/login', function(req, res, next) {
     });
 });
 
+app.post("/api/newpost",function(req, res, next){
+    
+});
+
 app.post("/", controllaToken);
 
 app.post("./static/index.html", controllaToken);
