@@ -91,6 +91,12 @@ app.use("/", function(req,res,next){
 
 app.use('/', express.static("./static"));
 
+app.post("/api/newpost",function(req, res, next){
+    
+});
+
+app.post("/", controllaToken);
+
 app.use(express.json({limit:'1000mb'}));
 
 app.use("*",function(req,res,next){
