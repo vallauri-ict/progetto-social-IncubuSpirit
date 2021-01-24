@@ -1,57 +1,67 @@
 "use strict";
 
 $(document).ready(function () {
-    let propicInput = $("#propicInput");
-    let imagepreview = $("#image-preview");
     let usernameInput = $("#usernameInput");
     let nomeInput = $("#nomeInput");
     let cognomeInput = $("#cognomeInput");
     let dobInput = $("#dobInput");
     let sessoInput = $("#sessoInput");
-    let dobInput = $("#dobInput");
     let emailInput = $("#emailInput");
     let passwordInput = $("#passwordInput");
     let numTelInput = $("#numTelInput");
-    let _email = emailInput.val();
-    let _password = passwordInput.val();
-    let btnRegister = $("#btnRegister").on("click", controllaRegistrazione);
+    let btnRegister = $("#btnRegister").on("click", cercaEmail);
 
-    $("#file-ip-1").on("change",function(){
-        var src = URL.createObjectURL(this.files[0]);
-        if(this.files.length > 0){
-            document.getElementById("image-preview").style.display = "block";
-            document.getElementById("image-preview").src = src;
-        }
-    });
+    function controllaRegistrazione(){  
+        let sesso=$('option[name="selSesso"]:selected').val();
+        let passMd5 = CryptoJS.MD5(passwordInput.val()).toString();
+        let request = inviaRichiesta("POST", "/api/register/",
+        {
+            "username":usernameInput.val(),
+            "nome":nomeInput.val(),
+            "cognome":cognomeInput.val(),
+            "sesso":sesso,
+            "dataNascita":dobInput.val(),
+            "email":emailInput.val(),
+            "password":passMd5,
+            "numTel":numTelInput.val()
+        });
 
-    function controllaRegistrazione(){
-        if (propicInput.val()=="")
-            openSnackbar("Inserire l'immagine profilo!"); 
-		else {
-			let request = inviaRichiesta("POST", "/login", 
-				{ "Propic": propicInput.attr("src"),
-                  "Username": usernameInput.val(),
-                  "Nome": nomeInput.val(),
-                  "Cognome": cognomeInput.val(),
-                  "DoB": dobInput.val(),
-                  "Sesso": sessoInput.val(),
-                  "Email": _email,
-                  "Password": _password,
-                  "NumTel":numTelInput.val()
-				}
-			);
-			request.fail(function(jqXHR, test_status, str_error) {
-				if (jqXHR.status == 401) {  // unauthorized
-					_lblErrore.show();
-				} else
-					errore(jqXHR, test_status, str_error);
-			});
-			request.done(function(data) {
-				window.location.href = "../../index.html";
-			});	
+        request.fail(errore);
+
+        request.done(function(data)
+        {
+            window.location.href="../../index.html"
+        });
+    }
+            
+    function cercaEmail(){
+        if (usernameInput.val()=="" ||
+            nomeInput.val()=="" ||
+            cognomeInput.val()=="" ||
+            dobInput.val()=="" ||
+            sessoInput.val()=="" ||
+            emailInput.val()=="" ||
+            passwordInput.val()=="" ||
+            numTelInput.val()=="")
+            openSnackbar("Campo/i mancante/i!"); 
+        else {
+            let request = inviaRichiesta("POST", "/api/cercaMail/", {"email":emailInput.val()});
+            request.fail(errore);
+
+            request.done(function(data)
+            {
+                console.log(data);
+                if(data["email"]=="found")
+                {
+                    openSnackbar("Email già esistente! Effettua il login per continuare!");
+                }
+                else if(data["email"]=="not found")
+                {
+                    controllaRegistrazione();
+                }
+            });
         }
     }
-});
   /* ********************* u can't touch this ************************ */
 
   function inviaRichiesta(method, url, parameters = {}) {
@@ -80,19 +90,20 @@ $(document).ready(function () {
 function errore(jqXHR, testStatus, strError) {
     if (jqXHR.status == 0)
     {
-        swal("Error!", "Connection refused or Server timeout", "error");
+        openSnackbar("Connection refused or Server timeout");
     }
     else if(jqXHR.status == 403)
     {
-        window.location.href="../../index.html";
+        openSnackbar("Errore durante il login!");
     }
     else if (jqXHR.status == 200)
     {
-        swal("Error!", "Data format uncorrect: " + jqXHR.responseText, "error");
+        openSnackbar("Data format uncorrect: " + jqXHR.responseText);
     }
     else
     {
-        swal("Error!", "Server Error: " + jqXHR.status + " - " + jqXHR.responseText, "error");
+        openSnackbar("Server Error: " + jqXHR.status + " - " + jqXHR.responseText);
     }
 }
+});
 

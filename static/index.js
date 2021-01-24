@@ -12,22 +12,23 @@ $(document).ready(function() {
     let btnCloseForm=$("#btnCloseForm").on("click",closeForm);
     let txtEmail=$("#txtEmail");
     let txtPassword=$("#txtPassword");
-    let _email=txtEmail.val();
-    let _password=txtPassword.val();
-    let btnLogin=$("#btnLogin").on("click",controllaLogin);
+    let canLogin=false;
+    let btnLogin=$("#btnLogin").on("click",verificaEmail);
+    let btnLogout=$("#btnLogout").on("click",logout).hide();
     let btnRegister=$("#btnRegister").on("click",function(){
-        let request = inviaRichiesta("GET", "/api/register");
-			request.fail(function(jqXHR, test_status, str_error) {
-				if (jqXHR.status == 401) {  // unauthorized
-					_lblErrore.show();
-				} else
-					errore(jqXHR, test_status, str_error);
-			});
-			request.done(function(data) {
-				window.location.href = "./pages/register/register.html"
-			});	
-    })
+        window.location.href = "./pages/register/register.html"
+    });
     typeWriter();
+    let tokenRequest=inviaRichiesta("POST","/api/controllaToken");
+    tokenRequest.fail(function() {
+        console.log("Not logged in.");
+    });
+    tokenRequest.done(function(data){
+        if(data["ris"]!="missingToken")
+        {
+            loggedUser();
+        }
+    })
 
     /*********************************** navbar buttons **************************************/
     btnSearch.on("click",function(){
@@ -50,47 +51,73 @@ $(document).ready(function() {
     })
 
     /*********************************** functions **************************************/
-    function controllaLogin(){
-        _email=txtEmail.val();
-        _password=txtPassword.val();
-        if (_email == "" && _password == "") {
+    function verificaEmail(){
+        if (txtEmail.val() == "" && txtPassword.val() == "") {
             openSnackbar("Inserire l'email e la password!"); 
         } 	
-        else if (_email == "") {
+        else if (txtEmail.val() == "") {
             openSnackbar("Inserire l'email!"); 
         } 
-		else if (_password == "") {
+        else if (txtPassword.val() == "") {
             openSnackbar("Inserire la password!"); 
-        }		
-		else {
-			let request = inviaRichiesta("POST", "/api/login", 
-				{ "email": _email,
-				  "pass": _password
-				}
-			);
-			request.fail(function(jqXHR, test_status, str_error) {
-				if (jqXHR.status == 401) {  // unauthorized
-					_lblErrore.show();
-				} else
-					errore(jqXHR, test_status, str_error);
-			});
-			request.done(function(data) {
-				window.location.href = "index.html"
-			});	
         }
+        else {
+            let request = inviaRichiesta("POST", "/api/cercaMail/", {"email":txtEmail.val()});
+            request.fail(errore);
+
+            request.done(function(data)
+            {
+                console.log(data);
+                if(data["email"]=="found")
+                {
+                    controllaLogin();
+                }
+                else if(data["email"]=="not found")
+                {
+                    openSnackbar("Email inesistente! Registrati per poter fare il login!");
+                }
+            });
+        }
+    }
+
+
+    function controllaLogin(){
+        let passMd5 = CryptoJS.MD5(txtPassword.val()).toString();
+        let request = inviaRichiesta("POST", "/api/login",
+        {
+            "email":txtEmail.val(),
+            "password":passMd5
+        });
+
+        request.fail(errore);
+
+        request.done(function(data)
+        {
+            btnCloseForm.click();
+            openSnackbar("Login effettuato!");
+            loggedUser();
+        });
+    }
+
+    function loggedUser(){
+        btnRegister.hide();
+        txtEmail.hide();
+        txtPassword.hide();
+        $("#lblEmail").hide();
+        $("#lblPassword").hide();
+        btnLogin.hide();
+        btnLogout.show();
     }
 
     function openSnackbar(msg) {
         // Get the snackbar DIV
-        let x = $("#snackbar").html(msg);
+        let _snackbar = $("#snackbar").html(msg);
       
         // Add the "show" class to DIV
-        x.attr("class","snackbar show");
+        _snackbar.attr("class","snackbar show");
       
         // After 3 seconds, remove the show class from DIV
-        setTimeout(function(){x.attr("class", "snackbar"); }, 3000);
-        _email="";
-        _password="";
+        setTimeout(function(){_snackbar.attr("class", "snackbar"); }, 3000);
       }
 
 
@@ -109,48 +136,56 @@ $(document).ready(function() {
     function closeForm() {
         document.getElementById("myForm").style.display = "none";
     }
+
+    function logout() {
+        let logoutRequest=inviaRichiesta("POST","/api/logout");
+        logoutRequest.fail(errore);
+        logoutRequest.done(function(data){
+            window.location.reload(true);
+        });
+    }
+
+    /* ********************* u can't touch this ************************ */
+
+    function inviaRichiesta(method, url, parameters = {}) {
+        let contentType;
+        if (method.toUpperCase() == "GET")
+        {
+            contentType = "application/x-www-form-urlencoded; charset=UTF-8"
+        }
+        else
+        {
+            contentType = "application/json; charset=UTF-8"
+            parameters = JSON.stringify(parameters);
+        }
+
+        return $.ajax({
+            url: url, //default: currentPage
+            type: method,
+            data: parameters,
+            contentType: contentType,
+            dataType: "json",
+            timeout: 5000
+        });
+    }
+
+
+    function errore(jqXHR, testStatus, strError) {
+        if (jqXHR.status == 0)
+        {
+            openSnackbar("Connection refused or Server timeout");
+        }
+        else if(jqXHR.status == 403)
+        {
+            openSnackbar("Errore durante il login!");
+        }
+        else if (jqXHR.status == 200)
+        {
+            openSnackbar("Data format uncorrect: " + jqXHR.responseText);
+        }
+        else
+        {
+            openSnackbar("Server Error: " + jqXHR.status + " - " + jqXHR.responseText);
+        }
+    }
 });
-
-/* ********************* u can't touch this ************************ */
-
-function inviaRichiesta(method, url, parameters = {}) {
-    let contentType;
-    if (method.toUpperCase() == "GET")
-    {
-        contentType = "application/x-www-form-urlencoded; charset=UTF-8"
-    }
-    else
-    {
-        contentType = "application/json; charset=UTF-8"
-        parameters = JSON.stringify(parameters);
-    }
-
-    return $.ajax({
-        url: url, //default: currentPage
-        type: method,
-        data: parameters,
-        contentType: contentType,
-        dataType: "json",
-        timeout: 5000
-    });
-}
-
-
-function errore(jqXHR, testStatus, strError) {
-    if (jqXHR.status == 0)
-    {
-        swal("Error!", "Connection refused or Server timeout", "error");
-    }
-    else if(jqXHR.status == 403)
-    {
-        window.location.href="pages/register/register.html";
-    }
-    else if (jqXHR.status == 200)
-    {
-        swal("Error!", "Data format uncorrect: " + jqXHR.responseText, "error");
-    }
-    else
-    {
-        swal("Error!", "Server Error: " + jqXHR.status + " - " + jqXHR.responseText, "error");
-    }
-}

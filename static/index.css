@@ -175,6 +175,11 @@ iframe {
   background-color: red;
 }
 
+/* Add a red background color to the cancel button */
+.form-container .logout {
+  background-color: rgb(54, 54, 54);
+}
+
 /* Add some hover effects to buttons */
 .form-container .btn:hover, .open-button:hover {
   opacity: 1;
