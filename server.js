@@ -20,6 +20,7 @@ cloudinary.config({
     api_key: '566151146433116',
     api_secret: 'P6yNKnfei9Q3UPBTSUQSoX6LEYA'
 });
+let currentUser="";
 
 let mongo=require("mongodb");
 let mongoClient = mongo.MongoClient;
@@ -91,10 +92,6 @@ app.use("/", function(req,res,next){
 
 app.use('/', express.static("./static"));
 
-app.post("/api/newpost",function(req, res, next){
-    
-});
-
 app.post("/", controllaToken);
 
 app.use(express.json({limit:'1000mb'}));
@@ -135,7 +132,6 @@ function controllaToken(req, res, next, method="GET") {
                 }
                 else
                 {
-                    //se la richiesta non è /api, bisogna mandare la pagina di login
                     inviaErrore(req, res, 403, "Token expired or corrupted");
                 }
             }
@@ -222,7 +218,8 @@ app.post('/api/login', function(req, res, next) {
             let pass=req.body.password;
 
             collection.findOne({"email": mail}, function(err, dbAccount) {
-                console.log(">>>>>>>>>> " + dbAccount.password);
+                currentUser=dbAccount.username;
+                console.log(">>>>>>>>>> USERNAME:"+currentUser);
                 if (err)
                 {
                     res.status(500).send("Internal Error in Query Execution.");
@@ -288,6 +285,7 @@ app.post("/api/cercaMail/", function(req, res, next){
 });
 
 app.post('/api/logout', function(req, res, next) {
+    currentUser="";
     res.set("Set-Cookie", "token=;max-age=-1;Path=/;httponly=true;");
     res.send({"ris": "ok"});
 });
@@ -339,6 +337,14 @@ app.post("/api/register/", function (req, res, next) {
     });
 });
 
+/******************************** Upload Post *******************************************/
+
+app.post('/api/getUsername', function(req, res, next) {
+    currentUser=req.payload.username;
+    console.log(currentUser);
+    res.send({"username": currentUser});
+});
+
 app.post("/uploadImage", function(req, res, next){
     let image = req.body.image;
     console.log("HEY QUESTA E LA FOTO "+image);
@@ -347,6 +353,10 @@ app.post("/uploadImage", function(req, res, next){
         console.log(result);
         res.send(result);
     });
+});
+
+app.post("/api/newpost",function(req, res, next){
+    
 });
 
 /******************************** After Token *******************************************/
