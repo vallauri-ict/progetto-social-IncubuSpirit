@@ -6,6 +6,16 @@ $(document).ready(function () {
   let _posttype;
   let currentUser;
   $("#video-preview").hover(hoverVideo, hideVideo);
+  let tokenRequest=inviaRichiesta("POST","/api/controllaToken");
+    tokenRequest.fail(function() {
+        console.log("Not logged in.");
+    });
+    tokenRequest.done(function(data){
+        if(data["ris"]!="missingToken")
+        {
+            cercaUsername();
+        }
+    })
 
   _btnPublish.on("click", cercaUsername);
 
@@ -18,25 +28,14 @@ $(document).ready(function () {
   };
 
   function cercaUsername() {
-    let tokenRequest=inviaRichiesta("POST","/api/controllaToken");
-    tokenRequest.fail(function() {
-        console.log("Not logged in.");
-    });
-    tokenRequest.done(function(data){
-        if(data["ris"]!="missingToken")
-        {
-            currentUser=data["username"];
-            console.log("ciao");
-        }
-    });
-    /*let request = inviaRichiesta("POST", "/api/getUsername");
+    let request = inviaRichiesta("POST", "/api/getUsername");
     request.fail(errore);
 
     request.done(function(data)
     {
         console.log(data["username"]);
         openSnackbar(data["username"]);
-    });*/
+    });
   }
 
   function showPreview(event) {
