@@ -55,30 +55,6 @@ hr {
   margin-bottom: 25px;
 }
 
-
-/* Add a blue text color to links */
-a {
-  color: dodgerblue;
-}
-
-/* Set a grey background color and center the text of the "sign in" section */
-.signin {
-  background-color: #f1f1f1;
-  text-align: center;
-}
-
-.container {
-  position: relative;
-  width: 50%;
-}
-
-
-/********************************* preview ************************************/
-img{
-    width:100%;
-    border-radius:5%;
-}
-
 /********************************* snackbar *********************************/
 
 /* The snackbar - position it at the bottom and in the middle of the screen */

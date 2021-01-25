@@ -13,8 +13,16 @@ $(document).ready(function(){
     let _email = emailInput.val();
     let _password = passwordInput.val();
 
-    function datiProfilo(img,username,nome,cognome,dob,email,password,numTel){
-        imagepreview.attr("src",img);
+    let Request=inviaRichiesta("POST","/api/profilo");
+    Request.fail(function() {
+        console.log("Not logged in.");
+    });
+    tokenRequest.done(function(data){
+        if(data["ris"]!="missingToken")
+        {
+            loggedUser();
+        }
+    })(img,username,nome,cognome,dob,email,password,numTel){
         usernameInput.attr("value",username);
         nomeInput.attr("value",nome);
         cognomeInput.attr("value",cognome);
