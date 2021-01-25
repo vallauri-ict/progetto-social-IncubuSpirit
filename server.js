@@ -10,7 +10,6 @@ const HEADERS = require("headers");
 const PORT = process.env.PORT || 1337;
 const DBNAME = "social";
 const TTL = 36000; //espresso in secondi
-const NO_COOKIES = "No cookies found";
 const CONNECTIONSTRING = "mongodb+srv://tagaru_mgmt:pa55word@socialcluster.f3sp6.mongodb.net";
 const CONNECTIONOPTIONS = {
     useNewUrlParser: true,
@@ -54,8 +53,6 @@ function init() {
         if (!err) {
             PRIVATE_KEY = data.toString();
         } else {
-            //Richiamo la route di gestione degli errori
-            //next(err);
             console.log("File mancante: private.key");
             server.close();
         }
@@ -112,7 +109,7 @@ function controllaToken(req, res, next, method = "GET") {
     let token = readCookie(req);
     console.log("Questo è il token: " + token);
 
-    if (token == NO_COOKIES) {
+    if (token == "Missing cookies") {
         console.log(method);
         if (method.toUpperCase() == "POST") {
             return {
@@ -162,7 +159,7 @@ function inviaErrore(req, res, cod, errMex) {
 }
 
 function readCookie(req) {
-    let valoreCookie = NO_COOKIES;
+    let valoreCookie = "Missing cookies";
     if (req.headers.cookie) {
         let cookies = req.headers.cookie.split(";");
         for (let item of cookies) {
