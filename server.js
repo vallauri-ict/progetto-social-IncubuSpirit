@@ -1,28 +1,30 @@
 "use strict"
-const http=require("http");
-const fs=require("fs");
-const express=require("express");
-const bodyParser=require("body-parser");
-const bcrypt=require("bcryptjs");
-const jwt=require("jsonwebtoken");
+const http = require("http");
+const fs = require("fs");
+const express = require("express");
+const bodyParser = require("body-parser");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const app = express();
 const HEADERS = require("headers");
 const PORT = process.env.PORT || 1337;
 const DBNAME = "social";
-const TTL=36000; //espresso in secondi
-const NO_COOKIES="No cookies found";
-const CONNECTIONSTRING="mongodb+srv://tagaru_mgmt:pa55word@socialcluster.f3sp6.mongodb.net";
-const CONNECTIONOPTIONS = {useNewUrlParser: true, useUnifiedTopology: true};
+const TTL = 36000; //espresso in secondi
+const CONNECTIONSTRING = "mongodb+srv://tagaru_mgmt:pa55word@socialcluster.f3sp6.mongodb.net";
+const CONNECTIONOPTIONS = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+};
 var cloudinary = require('cloudinary').v2;
-const CLOUDINARY_URL="cloudinary://566151146433116:P6yNKnfei9Q3UPBTSUQSoX6LEYA@tagaruapp"
+const CLOUDINARY_URL = "cloudinary://566151146433116:P6yNKnfei9Q3UPBTSUQSoX6LEYA@tagaruapp"
 cloudinary.config({
     cloud_name: 'tagaruapp',
     api_key: '566151146433116',
     api_secret: 'P6yNKnfei9Q3UPBTSUQSoX6LEYA'
 });
-let currentUser="";
+let currentUser = "";
 
-let mongo=require("mongodb");
+let mongo = require("mongodb");
 let mongoClient = mongo.MongoClient;
 const ObjectId = mongo.ObjectID;
 
@@ -47,13 +49,10 @@ function init() {
         else
             paginaErrore = "<h1>Risorsa non trovata</h1>";
     });
-    fs.readFile("./keys/private.key", function(err,data){
-        if(!err){
-            PRIVATE_KEY=data.toString();
-        }
-        else{
-            //Richiamo la route di gestione degli errori
-            //next(err);
+    fs.readFile("./keys/private.key", function (err, data) {
+        if (!err) {
+            PRIVATE_KEY = data.toString();
+        } else {
             console.log("File mancante: private.key");
             server.close();
         }
@@ -61,17 +60,17 @@ function init() {
 }
 
 // route di lettura parametri POST
-app.use(bodyParser.urlencoded({"extended":true}));
+app.use(bodyParser.urlencoded({
+    "extended": true
+}));
 app.use(bodyParser.json());
 
 //Log dei parametri
 app.use("/", function (req, res, next) {
-    if (Object.keys(req.query).length > 0)
-    {
+    if (Object.keys(req.query).length > 0) {
         console.log("Parametri GET: " + JSON.stringify(req.query));
     }
-    if (Object.keys(req.body).length > 0)
-    {
+    if (Object.keys(req.body).length > 0) {
         console.log("Parametri BODY: " + JSON.stringify(req.body));
     }
     next();
@@ -85,8 +84,8 @@ app.use('/', function (req, res, next) {
 });
 
 // route per far rispondere il server a qualunque richiesta, anche extra domain
-app.use("/", function(req,res,next){ 
-    res.setHeader("Access-Control-Allow-Origin", "*"); 
+app.use("/", function (req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
     next();
 });
 
@@ -94,89 +93,79 @@ app.use('/', express.static("./static"));
 
 app.post("/", controllaToken);
 
-app.use(express.json({limit:'1000mb'}));
+app.use(express.json({
+    limit: '1000mb'
+}));
 
-app.use("*",function(req,res,next){
-    console.log(">>>>>>>> Risorsa: "+req.originalUrl.split('?')[0]+".");
-    res.setHeader("Access-Controll-Allow_Origin","*");
+app.use("*", function (req, res, next) {
+    console.log(">>>>>>>> Risorsa: " + req.originalUrl.split('?')[0] + ".");
+    res.setHeader("Access-Controll-Allow_Origin", "*");
     next();
 });
 
 /******************************** Token & Cookies *******************************************/
 
-function controllaToken(req, res, next, method="GET") {
+function controllaToken(req, res, next, method = "GET") {
     let token = readCookie(req);
-    console.log("Questo è il token: "+token);
+    console.log("Questo è il token: " + token);
 
-    if(token==NO_COOKIES)
-    {
+    if (token == "Missing cookies") {
         console.log(method);
-        if(method.toUpperCase()=="POST")
-        {
-            return {"ris":"missingToken"}
-        }
-        else
-        {
+        if (method.toUpperCase() == "POST") {
+            return {
+                "ris": "missingToken"
+            }
+        } else {
             inviaErrore(req, res, 403, "Token mancante");
         }
-    }
-    else
-    {
-        jwt.verify(token, PRIVATE_KEY, function(err, payload)
-        {
-            if(err)
-            {
-                if(method.toUpperCase()=="POST")
-                {
-                    return {"ris":"missingToken"}
-                }
-                else
-                {
+    } else {
+        jwt.verify(token, PRIVATE_KEY, function (err, payload) {
+            if (err) {
+                if (method.toUpperCase() == "POST") {
+                    return {
+                        "ris": "missingToken"
+                    }
+                } else {
                     inviaErrore(req, res, 403, "Token expired or corrupted");
                 }
-            }
-            else
-            {
-                let newToken=createToken(payload);
+            } else {
+                let newToken = createToken(payload);
                 writeCookie(res, newToken);
-                req.payload=payload;
-                if(method.toUpperCase()=="POST")
-                {
-                    return {"ris":"ok", "payload":payload}
-                }
-                else
-                {
+                req.payload = payload;
+                currentUser = req.payload.username;
+                console.log("USERNAME>>>" + currentUser);
+                if (method.toUpperCase() == "POST") {
+                    return {
+                        "ris": "ok",
+                        "payload": payload
+                    }
+                } else {
                     next();
                 }
             }
         });
     }
-    return {"ris":"no return required"};
+    return {
+        "ris": "no return required"
+    };
 }
 
-function inviaErrore(req, res, cod, errMex)
-{
-    if(req.originalUrl.startsWith("/api"))
-    {
+function inviaErrore(req, res, cod, errMex) {
+    if (req.originalUrl.startsWith("/api")) {
         res.status(cod).send(errMex);
-    }
-    else
-    {
+    } else {
         res.sendFile(`${__dirname}/static/index.html`);
     }
 }
 
-function readCookie(req){
-    let valoreCookie=NO_COOKIES;
-    if(req.headers.cookie)
-    {
-        let cookies=req.headers.cookie.split(";");
-        for(let item of cookies)
-        {
-            item=item.split("=");
-            if(item[0].includes("token"))
-            {
-                valoreCookie=item[1];
+function readCookie(req) {
+    let valoreCookie = "Missing cookies";
+    if (req.headers.cookie) {
+        let cookies = req.headers.cookie.split(";");
+        for (let item of cookies) {
+            item = item.split("=");
+            if (item[0].includes("token")) {
+                valoreCookie = item[1];
                 break;
             }
         }
@@ -184,61 +173,85 @@ function readCookie(req){
     return valoreCookie;
 }
 
-function writeCookie(res, token, expires=TTL){
+function writeCookie(res, token, expires = TTL) {
     res.set("Set-Cookie", `token=${token};expires=${expires};path=/;httponly=true;secure=true`);
 }
 
-function createToken(data){
-    let param={
-        "_id":data["_id"],
-        "username":data.username,
-        "email":data.email,
-        "sesso":data.sesso,
-        "iat":data.iat || Math.floor(Date.now()/1000),
-        "exp":Math.floor(Date.now()/1000)+TTL
+function createToken(data) {
+    let param = {
+        "_id": data["_id"],
+        "username": data.username,
+        "email": data.email,
+        "sesso": data.sesso,
+        "iat": data.iat || Math.floor(Date.now() / 1000),
+        "exp": Math.floor(Date.now() / 1000) + TTL
     }
-    let token=jwt.sign(param, PRIVATE_KEY);
+    let token = jwt.sign(param, PRIVATE_KEY);
     return token;
 }
 
 /******************************** Login *******************************************/
 
-app.post('/api/login', function(req, res, next) {
-    mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function(err, client) {
-        if (err)
-        {
+app.post('/api/login', function (req, res, next) {
+    mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function (err, client) {
+        if (err) {
             res.status(503).send("Errore di connessione al database.");
-        }
-        else
-        {
+        } else {
             let db = client.db(DBNAME);
             let collection = db.collection('accounts');
 
-            let mail=req.body.email;
-            let pass=req.body.password;
+            let mail = req.body.email;
+            let pass = req.body.password;
 
-            collection.findOne({"email": mail}, function(err, dbAccount) {
-                currentUser=dbAccount.username;
-                console.log(">>>>>>>>>> USERNAME:"+currentUser);
-                if (err)
-                {
+            collection.findOne({
+                "email": mail
+            }, function (err, dbAccount) {
+                currentUser = dbAccount.username;
+                console.log(">>>>>>>>>> USERNAME:" + currentUser);
+                if (err) {
                     res.status(500).send("Internal Error in Query Execution.");
-                }
-                else
-                {
-                    if (dbAccount == null)
-                    {
+                } else {
+                    if (dbAccount == null) {
                         res.status(401).send("Incorrect mail or password.");
-                    }
-                    else
-                    {
-                        if(pass == dbAccount.password) {
-                            let newToken=createToken(dbAccount);
+                    } else {
+                        if (pass == dbAccount.password) {
+                            let newToken = createToken(dbAccount);
                             writeCookie(res, newToken);
-                            res.send({"ris":"ok"});
+                            res.send({
+                                "ris": "ok"
+                            });
+                            /*var decoded = jwt.decode(newToken);
+                            console.log(decoded.payload);
+                            currentUser=decoded.payload.username;
+                            console.log("USERNAME>>>>>"+currentUser);*/
                             client.close();
-                        }
-                        else {
+
+                            /* function parseCookies (request) {
+                                var list = {},
+                                    rc = request.headers.cookie;
+
+                                rc && rc.split(';').forEach(function( cookie ) {
+                                    var parts = cookie.split('=');
+                                    list[parts.shift().trim()] = decodeURI(parts.join('='));
+                                });
+
+                                return list;
+                            }
+                            http.createServer(function (request, response) {
+
+                            // To Read a Cookie
+                            var cookies = parseCookies(request);
+
+                            // To Write a Cookie
+                            response.writeHead(200, {
+                                'Set-Cookie': 'mycookie=test',
+                                'Content-Type': 'text/plain'
+                            });
+                            response.end('Hello World\n');
+                            }).listen(1337);
+
+                            console.log('Server running at http://127.0.0.1:1337/'); */
+                        } else {
                             res.status(401).send("Incorrect mail or password.");
                         }
                     }
@@ -248,34 +261,31 @@ app.post('/api/login', function(req, res, next) {
     });
 });
 
-app.post("/api/cercaMail/", function(req, res, next){
-    mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function(err, client) {
-        if (err)
-        {
+app.post("/api/cercaMail/", function (req, res, next) {
+    mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function (err, client) {
+        if (err) {
             res.status(503).send("Errore di connessione al database.");
-        }
-        else
-        {
-            let mail=req.body.email;
+        } else {
+            let mail = req.body.email;
             console.log(">>>>>>>>>> " + mail);
 
             let db = client.db(DBNAME);
             let collection = db.collection('accounts');
 
-            collection.findOne({"email":mail}, function(err, data){
-                if(err)
-                {
+            collection.findOne({
+                "email": mail
+            }, function (err, data) {
+                if (err) {
                     res.status(500).send("Internal Error in Query Execution.");
-                }
-                else
-                {
-                    if(data)
-                    {
-                        res.send({"email":"found"});
-                    }
-                    else
-                    {
-                        res.send({"email":"not found"});
+                } else {
+                    if (data) {
+                        res.send({
+                            "email": "found"
+                        });
+                    } else {
+                        res.send({
+                            "email": "not found"
+                        });
                     }
                     client.close();
                 }
@@ -284,20 +294,27 @@ app.post("/api/cercaMail/", function(req, res, next){
     });
 });
 
-app.post('/api/logout', function(req, res, next) {
-    currentUser="";
+app.post('/api/logout', function (req, res, next) {
+    currentUser = "";
     res.set("Set-Cookie", "token=;max-age=-1;Path=/;httponly=true;");
-    res.send({"ris": "ok"});
+    res.send({
+        "ris": "ok"
+    });
 });
 
 app.post("/api/controllaToken", function (req, res, next) {
     let token = controllaToken(req, res, next, "POST");
-    if(token["ris"]!="missingToken")
-    {
-        res.send({"ris":"token","_id":req.payload["_id"],"username":req.payload.username,"email":req.payload.email,"sesso":req.payload.sesso});
-    }
-    else
-    {
+    if (token["ris"] != "missingToken") {
+        res.send({
+            "ris": "token",
+            "_id": req.payload["_id"],
+            "username": req.payload.username,
+            "email": req.payload.email,
+            "sesso": req.payload.sesso
+        });
+        currentUser = req.payload.username;
+        console.log("USERNAME>>>>>" + currentUser);
+    } else {
         res.send(token);
     }
 });
@@ -306,29 +323,24 @@ app.post("/api/controllaToken", function (req, res, next) {
 
 app.post("/api/register/", function (req, res, next) {
     console.log(req.body);
-    mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function(err, client){
-        if (err)
-        {
+    mongoClient.connect(CONNECTIONSTRING, CONNECTIONOPTIONS, function (err, client) {
+        if (err) {
             res.status(503).send("Database connection error.");
-        }
-        else
-        {
+        } else {
             let db = client.db(DBNAME);
             let collection = db.collection('accounts');
-            collection.insertOne(req.body,function(err,data) {
-                if(err)
-                {
+            collection.insertOne(req.body, function (err, data) {
+                if (err) {
                     res.status(500).send("Internal Error in Query Execution.");
-                }
-                else
-                {
-                    if(data)
-                    {
-                        res.send({"ris":"ok"});
-                    }
-                    else
-                    {
-                        res.send({"ris":"nok"});
+                } else {
+                    if (data) {
+                        res.send({
+                            "ris": "ok"
+                        });
+                    } else {
+                        res.send({
+                            "ris": "nok"
+                        });
                     }
                     client.close();
                 }
@@ -339,24 +351,22 @@ app.post("/api/register/", function (req, res, next) {
 
 /******************************** Upload Post *******************************************/
 
-app.post('/api/getUsername', function(req, res, next) {
-    currentUser=req.payload.username;
-    console.log(currentUser);
-    res.send({"username": currentUser});
+app.post('/api/getUsername', function (req, res, next) {
+    let token = readCookie(req);
+
 });
 
-app.post("/uploadImage", function(req, res, next){
+app.post("/uploadImage", function (req, res, next) {
     let image = req.body.image;
-    console.log("HEY QUESTA E LA FOTO "+image);
-    cloudinary.uploader.upload(image, function(result)
-    {
+    console.log("HEY QUESTA E LA FOTO " + image);
+    cloudinary.uploader.upload(image, function (result) {
         console.log(result);
         res.send(result);
     });
 });
 
-app.post("/api/newpost",function(req, res, next){
-    
+app.post("/api/newpost", function (req, res, next) {
+
 });
 
 /******************************** After Token *******************************************/
@@ -364,5 +374,4 @@ app.post("/", controllaToken);
 
 app.post("./static/index.html", controllaToken);
 
-app.use("/api",controllaToken);
-
+app.use("/api", controllaToken);
