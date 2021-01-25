@@ -18,17 +18,12 @@ $(document).ready(function(){
         console.log("Not logged in.");
     });
     tokenRequest.done(function(data){
-        if(data["ris"]!="missingToken")
-        {
-            loggedUser();
-        }
-    })(img,username,nome,cognome,dob,email,password,numTel){
-        usernameInput.attr("value",username);
+        usernameInput.attr("value",data.username);
         nomeInput.attr("value",nome);
         cognomeInput.attr("value",cognome);
         dobInput.attr("value",dob);
         emailInput.attr("value",email);
         passwordInput.attr("value",password);
         numTelInput.attr("value",numTel);
-    }
+    })
 });
